@@ -1,7 +1,12 @@
 package es.unex.parsiapp.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName="post")
 public class Post {
     /*  TODO REVISAR TODOS LOS ATRIBUTOS QUE PUEDAN IDENTIFICAR A UN TWIT.
             HABRÁ QUE QUITAR Y/O PONER ALGUNOS ATRIBUTOS, PROBABLEMENTE
@@ -9,10 +14,17 @@ public class Post {
     EN ESTA CLASE HABRÁ QUE HACER MUCHOS MÉTODOS QUE CONECTEN CON LA API
 
     */
+    @Ignore
+    public static final String ITEM_SEP = System.getProperty("line.separator");
 
+    @PrimaryKey(autoGenerate = true)
+    private long idDb; // ID de la BD
+    @ColumnInfo(name="id")
     private String id;  // ID única del Twit
+    @ColumnInfo(name="url")
     private String url; // URL para llegar al Twit
-    private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo
+    @Ignore
+    private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo)
 
 
     /*
@@ -22,6 +34,32 @@ public class Post {
         la URL, etc
 
      */
+
+    @Ignore
+    public Post(String id, String url){
+        this.id = id;
+        this.url = url;
+    }
+
+    public Post(long idDb, String id, String url){
+        this.idDb = idDb;
+        this.id = id;
+        this.url = url;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {this.id = id;}
+
+    public long getIdDb() {return this.idDb;}
+
+    public void setIdDb(long idDb) {this.idDb = idDb;}
+
+    public String getUrl(){
+        return this.url;
+    }
 
     /**
      * Método para compartir el post a otras apps mediante un Intent Implícito
@@ -46,6 +84,10 @@ public class Post {
      */
     public String getTexto(){
         return null;
+    }
+
+    public String toLog() {
+        return "ID: " + idDb + ITEM_SEP + "id twitter: " + id + ITEM_SEP + "url: " + url;
     }
 
 

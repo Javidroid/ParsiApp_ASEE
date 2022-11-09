@@ -15,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
+import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class MenuLateralActivity extends AppCompatActivity {
 
@@ -47,6 +49,24 @@ public class MenuLateralActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_menu_lateral);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Creacion de un nuevo hilo (la BD NO puede usarse en el hilo main())
+
+        /*AppExecutors.getInstance().diskIO().execute(new Runnable(){
+            @Override
+            public void run() {
+                // Creacion BD:
+                ParsiDatabase bd = ParsiDatabase.getInstance(MenuLateralActivity.this);
+
+                // Pruebas BD:
+                Carpeta c = new Carpeta("carpeta1");
+                long id = bd.getCarpetaDao().insert(c);
+
+                // Esto son apuntes pablotásticos:
+                // No se pueden actualizar elementos de la vista desde un hilo que no sea el principal
+                // runOnUiThread(()-> mAdapter.add(c));
+            }
+        });*/
     }
 
     @Override
@@ -61,5 +81,11 @@ public class MenuLateralActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_menu_lateral);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        ParsiDatabase.getInstance(this).close();
+        super.onDestroy();
     }
 }

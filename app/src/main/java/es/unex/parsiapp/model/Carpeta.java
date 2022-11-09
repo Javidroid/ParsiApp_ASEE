@@ -1,15 +1,39 @@
 package es.unex.parsiapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity(tableName="carpeta")
 public class Carpeta {
-    private String nombre;
+
+    @Ignore
+    public static final String ITEM_SEP = System.getProperty("line.separator");
+
+    @PrimaryKey(autoGenerate = true)
+    private long idDb; // ID en la BD
+    @ColumnInfo(name="nombre")
+    private String nombre = new String();
+    @Ignore
     private String foto; // cadena que guarda el directorio del asset correspondiente
+    @Ignore
     private List<Post> listaPosts;
 
+    public Carpeta(){}
+
+    @Ignore
     public Carpeta(String nombre) {
         this.nombre = nombre;
         // todo this.foto = [DIRECTORIO DE LA FOTO DE LAS CARPETAS POR DEFECTO]
+    }
+
+    @Ignore
+    public Carpeta(long id, String nombre){
+        this.idDb = id;
+        this.nombre = nombre;
     }
 
     /**
@@ -19,6 +43,10 @@ public class Carpeta {
     public void cambiarNombre(String nombre){
         this.nombre = nombre;
     }
+
+    public void setNombre(String nombre){this.nombre = nombre;}
+
+    public String getNombre() { return this.nombre; }
 
     /**
      * Método para cambiar la foto asociada a la carpeta
@@ -58,5 +86,15 @@ public class Carpeta {
      */
     public List<Post> getListaPosts() {
         return listaPosts;
+    }
+
+    public void setIdDb(long idDb){
+        this.idDb = idDb;
+    }
+
+    public long getIdDb(){ return this.idDb; }
+
+    public String toLog() {
+        return "ID: " + idDb + ITEM_SEP + "Nombre: " + nombre;
     }
 }
