@@ -17,8 +17,9 @@ public class Carpeta {
     private long idDb; // ID en la BD
     @ColumnInfo(name="nombre")
     private String nombre = new String();
-    @Ignore
-    private String foto; // cadena que guarda el directorio del asset correspondiente
+    // @Ignore
+    //private String foto; // cadena que guarda el directorio del asset correspondiente
+    // Esto es para poner una foto personalizada a cada carpeta. Funcionalidad Futura.
     @Ignore
     private List<Post> listaPosts;
 
@@ -52,9 +53,9 @@ public class Carpeta {
      * Método para cambiar la foto asociada a la carpeta
      * @param foto Directorio del ASSET que se quiera poner
      */
-    public void cambiarFoto(String foto){
+    /*public void cambiarFoto(String foto){
         this.foto = foto;
-    }
+    }*/
 
     /**
      * Método para añadir un post
