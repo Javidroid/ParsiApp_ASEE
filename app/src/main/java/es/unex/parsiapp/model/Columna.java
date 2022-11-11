@@ -22,8 +22,11 @@ public class Columna {
      * @return Lista de posts que han pasado los filtros
      */
     public List<Post> refrescarColumna(){
-
         return null;
+    }
+
+    private void llamadaAPIPosts(){
+
     }
 
     /**

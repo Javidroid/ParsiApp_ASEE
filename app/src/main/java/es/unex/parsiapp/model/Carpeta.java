@@ -10,9 +10,6 @@ import java.util.List;
 @Entity(tableName="carpeta")
 public class Carpeta {
 
-    @Ignore
-    public static final String ITEM_SEP = System.getProperty("line.separator");
-
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID en la BD
     @ColumnInfo(name="nombre")
@@ -25,7 +22,7 @@ public class Carpeta {
 
     public Carpeta(){}
 
-    @Ignore
+
     public Carpeta(String nombre) {
         this.nombre = nombre;
         // todo this.foto = [DIRECTORIO DE LA FOTO DE LAS CARPETAS POR DEFECTO]
@@ -94,8 +91,4 @@ public class Carpeta {
     }
 
     public long getIdDb(){ return this.idDb; }
-
-    public String toLog() {
-        return "ID: " + idDb + ITEM_SEP + "Nombre: " + nombre;
-    }
 }

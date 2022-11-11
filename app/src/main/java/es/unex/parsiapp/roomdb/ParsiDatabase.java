@@ -9,16 +9,18 @@ import androidx.room.RoomDatabase;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 
-@Database(entities={Carpeta.class, Post.class}, version=1)
+@Database(entities={Carpeta.class, Post.class}, version=4)
 public abstract class ParsiDatabase extends RoomDatabase {
     private static ParsiDatabase instance;
 
     public static ParsiDatabase getInstance(Context context) {
         if(instance == null){
-            instance = Room.databaseBuilder(context, ParsiDatabase.class, "parsi.db").build();
+            // .fallbackToDestructiveMigration destruye la BD cuando se cambia de version
+            instance = Room.databaseBuilder(context, ParsiDatabase.class, "parsi.db").fallbackToDestructiveMigration().build();
         }
         return instance;
     }
 
     public abstract CarpetaDao getCarpetaDao();
+    public abstract PostDao getPostDao();
 }

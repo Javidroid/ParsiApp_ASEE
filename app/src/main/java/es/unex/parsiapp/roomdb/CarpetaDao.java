@@ -9,11 +9,15 @@ import androidx.room.Update;
 import java.util.List;
 
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Post;
 
 @Dao
 public interface CarpetaDao {
     @Query("SELECT * FROM carpeta")
     public List<Carpeta> getAll();
+    // TODO get posts by idcarpeta
+    @Query("SELECT * FROM post WHERE carpetaid = :carpeta_id")
+    public List<Post> getAllPostsFromCarpeta(long carpeta_id);
     @Insert
     public long insert(Carpeta item);
     @Query("DELETE FROM carpeta")

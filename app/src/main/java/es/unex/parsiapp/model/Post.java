@@ -6,6 +6,9 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
+
 @Entity(tableName="post")
 public class Post {
     /*  TODO REVISAR TODOS LOS ATRIBUTOS QUE PUEDAN IDENTIFICAR A UN TWIT.
@@ -19,10 +22,17 @@ public class Post {
 
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID de la BD
+    @SerializedName("id")
     @ColumnInfo(name="id")
     private String id;  // ID única del Twit
-    @ColumnInfo(name="url")
-    private String url; // URL para llegar al Twit
+    @ColumnInfo(name="carpetaid")
+    private long idCarpeta; // ID de la BD de la carpeta que contiene al post
+    @SerializedName("author_id")
+    @Ignore
+    private String authorId; // ID del autor
+    @Ignore
+    private String authorUsername; // Nombre de usuario del autor
+    @SerializedName("text")
     @Ignore
     private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo)
 
@@ -32,20 +42,29 @@ public class Post {
         Habrá que hacer métodos que recojan toda la información necesaria de un Twit desde la API
         Por ejemplo, obtener la ID, el Texto, si tiene multimedia asociada, la cuenta que lo ha subido,
         la URL, etc
-
      */
 
     @Ignore
-    public Post(String id, String url){
+    public Post(String id){
         this.id = id;
-        this.url = url;
     }
 
-    public Post(long idDb, String id, String url){
+    @Ignore
+    public Post(String id, long idCarpeta){
+        this.id = id;
+        this.idCarpeta = idCarpeta;
+    }
+
+    public Post(long idDb, String id, long idCarpeta){
         this.idDb = idDb;
         this.id = id;
-        this.url = url;
+        this.idCarpeta = idCarpeta;
     }
+
+    // --- Métodos get y set ---
+    public long getIdDb() {return this.idDb;}
+
+    public void setIdDb(long idDb) {this.idDb = idDb;}
 
     public String getId() {
         return this.id;
@@ -53,13 +72,21 @@ public class Post {
 
     public void setId(String id) {this.id = id;}
 
-    public long getIdDb() {return this.idDb;}
+    public long getIdCarpeta() {return idCarpeta;}
 
-    public void setIdDb(long idDb) {this.idDb = idDb;}
+    public void setIdCarpeta(long idCarpeta) {this.idCarpeta = idCarpeta;}
 
-    public String getUrl(){
-        return this.url;
-    }
+    public String getAuthorId() {return authorId;}
+
+    public void setAuthorId(String authorId) {this.authorId = authorId;}
+
+    public String getAuthorUsername() {return authorUsername;}
+
+    public void setAuthorUsername(String authorUsername) {this.authorUsername = authorUsername;}
+
+    public String getContenido() { return this.contenido; }
+
+    public void setContenido(String contenido) { this.contenido = contenido;}
 
     /**
      * Método para compartir el post a otras apps mediante un Intent Implícito
@@ -76,18 +103,6 @@ public class Post {
      */
     public void guardarEnCarpeta(@NonNull Carpeta carpeta){
         carpeta.anadirPost(this);
-    }
-
-    /**
-     * Método que obtiene el texto del twit mediante la API
-     * @return Texto que se ha recogido del Twit
-     */
-    public String getTexto(){
-        return null;
-    }
-
-    public String toLog() {
-        return "ID: " + idDb + ITEM_SEP + "id twitter: " + id + ITEM_SEP + "url: " + url;
     }
 
 

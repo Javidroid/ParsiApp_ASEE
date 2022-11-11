@@ -14,14 +14,26 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
+import es.unex.parsiapp.twitterapi.Datum;
+import es.unex.parsiapp.twitterapi.TweetResults;
+import es.unex.parsiapp.twitterapi.TwitterService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MenuLateralActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
+    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,23 +62,47 @@ public class MenuLateralActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // Creacion de un nuevo hilo (la BD NO puede usarse en el hilo main())
+        // --- API --- //
+        // NO se pueden hacer llamadas a la API en el hilo principal
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.twitter.com/2/tweets/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        /*AppExecutors.getInstance().diskIO().execute(new Runnable(){
+        TwitterService twitterService = retrofit.create(TwitterService.class);
+
+        // Hacer un .enqueue es equivalente a llamarla en un hilo separado
+        twitterService.tweetResults("Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+            @Override
+            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
+                TweetResults tweetResults = response.body();
+                List<Datum> datumList = tweetResults.getData();
+                for(Datum d: datumList){
+                    System.out.println("CONTENIDO TWEET -> " + d.getText());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TweetResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+        // --- BD --- //
+        // NO se pueden hacer llamadas a la BD en el hilo principal
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                // Creacion BD:
-                ParsiDatabase bd = ParsiDatabase.getInstance(MenuLateralActivity.this);
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
 
-                // Pruebas BD:
-                Carpeta c = new Carpeta("carpeta1");
-                long id = bd.getCarpetaDao().insert(c);
+                List<Carpeta> carpetaList = database.getCarpetaDao().getAll();
+                System.out.println("CANTIDAD DE CARPETAS: " + carpetaList.size());
 
-                // Esto son apuntes pablotásticos:
-                // No se pueden actualizar elementos de la vista desde un hilo que no sea el principal
-                // runOnUiThread(()-> mAdapter.add(c));
+                database.getPostDao().deleteAll();
+                database.getCarpetaDao().deleteAll();
             }
-        });*/
+        });
     }
 
     @Override
