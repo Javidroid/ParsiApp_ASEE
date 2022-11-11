@@ -11,14 +11,6 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName="post")
 public class Post {
-    /*  TODO REVISAR TODOS LOS ATRIBUTOS QUE PUEDAN IDENTIFICAR A UN TWIT.
-            HABRÁ QUE QUITAR Y/O PONER ALGUNOS ATRIBUTOS, PROBABLEMENTE
-
-    EN ESTA CLASE HABRÁ QUE HACER MUCHOS MÉTODOS QUE CONECTEN CON LA API
-
-    */
-    @Ignore
-    public static final String ITEM_SEP = System.getProperty("line.separator");
 
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID de la BD
@@ -36,14 +28,7 @@ public class Post {
     @Ignore
     private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo)
 
-
-    /*
-        TODO MÉTODOS:
-        Habrá que hacer métodos que recojan toda la información necesaria de un Twit desde la API
-        Por ejemplo, obtener la ID, el Texto, si tiene multimedia asociada, la cuenta que lo ha subido,
-        la URL, etc
-     */
-
+    // --- Constructores ---
     @Ignore
     public Post(String id){
         this.id = id;
@@ -105,5 +90,8 @@ public class Post {
         carpeta.anadirPost(this);
     }
 
+    public String toString(){
+        return "POST - ID: " + this.id + " - AUTOR ID: " + this.authorId + " - USERNAME: " + this.authorUsername + " - CONTENIDO: " + this.contenido;
+    }
 
 }

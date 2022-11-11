@@ -76,9 +76,11 @@ public class MenuLateralActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
                 TweetResults tweetResults = response.body();
-                List<Datum> datumList = tweetResults.getData();
-                for(Datum d: datumList){
-                    System.out.println("CONTENIDO TWEET -> " + d.getText());
+                // Conversion a lista de Posts de los tweets recibidos
+                List<Post> postList = tweetResults.toPostList();
+
+                for(Post p: postList){
+                    System.out.println(p.toString());
                 }
             }
 
@@ -96,9 +98,9 @@ public class MenuLateralActivity extends AppCompatActivity {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
 
-                List<Carpeta> carpetaList = database.getCarpetaDao().getAll();
-                System.out.println("CANTIDAD DE CARPETAS: " + carpetaList.size());
+                // Operaciones BD
 
+                // TODO Aqui borro ahora para quitar los cambios a la BD pero esto hay que quitarlo
                 database.getPostDao().deleteAll();
                 database.getCarpetaDao().deleteAll();
             }

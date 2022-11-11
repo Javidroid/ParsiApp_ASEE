@@ -1,9 +1,12 @@
 
 package es.unex.parsiapp.twitterapi;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import es.unex.parsiapp.model.Post;
 
 public class TweetResults {
 
@@ -54,6 +57,25 @@ public class TweetResults {
     public TweetResults withMeta(Meta meta) {
         this.meta = meta;
         return this;
+    }
+
+    /*
+        Metodo para pasar un objeto TweetResults a una lista de Posts
+     */
+    public List<Post> toPostList(){
+        int i = 0;
+        List<Post> postList = new ArrayList<Post>();
+
+        for(Datum d: this.data){
+            Post p = new Post(d.getId());
+            p.setAuthorId(d.getAuthorId());
+            p.setContenido(d.getText());
+            p.setAuthorUsername(this.includes.getUsers().get(i).getUsername());
+
+            postList.add(p);
+            i++;
+        }
+        return postList;
     }
 
 }
