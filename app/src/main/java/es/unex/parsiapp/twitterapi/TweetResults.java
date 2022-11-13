@@ -71,6 +71,8 @@ public class TweetResults {
             p.setAuthorId(d.getAuthorId());
             p.setContenido(d.getText());
             p.setAuthorUsername(this.includes.getUsers().get(i).getUsername());
+            p.setProfilePicture(this.includes.getUsers().get(i).getProfileImageUrl());
+            p.setTimestamp(d.getCreatedAt());
 
             postList.add(p);
             i++;

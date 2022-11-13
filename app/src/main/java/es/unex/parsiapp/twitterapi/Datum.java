@@ -19,6 +19,9 @@ public class Datum {
     @SerializedName("author_id")
     @Expose
     private String authorId;
+    @SerializedName("created_at")
+    @Expose
+    private String createdAt;
 
     public String getText() {
         return text;
@@ -72,4 +75,11 @@ public class Datum {
         return this;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 }

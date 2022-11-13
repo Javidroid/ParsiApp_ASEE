@@ -7,12 +7,14 @@ import android.view.Menu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MenuLateralActivity extends AppCompatActivity {
+public class MenuLateralActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
@@ -82,6 +84,7 @@ public class MenuLateralActivity extends AppCompatActivity {
                 for(Post p: postList){
                     System.out.println(p.toString());
                 }
+
             }
 
             @Override
@@ -105,7 +108,13 @@ public class MenuLateralActivity extends AppCompatActivity {
                 database.getCarpetaDao().deleteAll();
             }
         });
+
+        // --- Testeo en la UI ---
+        // esto borradlo o lo que querais
+
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

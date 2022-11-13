@@ -14,19 +14,20 @@ public class Post {
 
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID de la BD
-    @SerializedName("id")
     @ColumnInfo(name="id")
     private String id;  // ID única del Twit
     @ColumnInfo(name="carpetaid")
     private long idCarpeta; // ID de la BD de la carpeta que contiene al post
-    @SerializedName("author_id")
     @Ignore
     private String authorId; // ID del autor
     @Ignore
     private String authorUsername; // Nombre de usuario del autor
-    @SerializedName("text")
     @Ignore
     private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo)
+    @Ignore
+    private String profilePicture; // URL de la foto de perfil del autor
+    @Ignore
+    private String timestamp; // Fecha y hora de creacion del tweet
 
     // --- Constructores ---
     @Ignore
@@ -72,6 +73,22 @@ public class Post {
     public String getContenido() { return this.contenido; }
 
     public void setContenido(String contenido) { this.contenido = contenido;}
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     /**
      * Método para compartir el post a otras apps mediante un Intent Implícito
