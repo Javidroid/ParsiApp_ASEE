@@ -75,6 +75,7 @@ public class MenuLateralActivity extends AppCompatActivity{
         twitterService.tweetResults("Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
             @Override
             public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
+                System.out.println(response.body().getData().size());
                 TweetResults tweetResults = response.body();
                 // Conversion a lista de Posts de los tweets recibidos
                 listposts = tweetResults.toPostList();
