@@ -11,4 +11,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="nombre">Nombre</string>
+    <string name="nombreusuario">\@NombreUsuario</string>
+    <string name="separator">·</string>
+    <string name="tiempo">Tiempo</string>
+    <string name="descriptionTweet">Tweet</string>
+    <string name="compartir">Compartir</string>
+    <string name="guardartweet">guardarTweet</string>
 </resources>
