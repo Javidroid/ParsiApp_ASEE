@@ -16,7 +16,7 @@ public abstract class ParsiDatabase extends RoomDatabase {
     public static ParsiDatabase getInstance(Context context) {
         if(instance == null){
             // .fallbackToDestructiveMigration destruye la BD cuando se cambia de version
-            instance = Room.databaseBuilder(context, ParsiDatabase.class, "parsi.db").build();
+            instance = Room.databaseBuilder(context, ParsiDatabase.class, "parsi.db").fallbackToDestructiveMigration().build();
         }
         return instance;
     }
