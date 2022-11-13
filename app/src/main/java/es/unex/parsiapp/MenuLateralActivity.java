@@ -10,6 +10,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,7 +30,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MenuLateralActivity extends AppCompatActivity{
-
+    private List<Post> listposts;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
     private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
@@ -75,12 +77,13 @@ public class MenuLateralActivity extends AppCompatActivity{
             public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
                 TweetResults tweetResults = response.body();
                 // Conversion a lista de Posts de los tweets recibidos
-                List<Post> postList = tweetResults.toPostList();
+                listposts = tweetResults.toPostList();
 
-                for(Post p: postList){
-                    System.out.println(p.toString());
-                }
-
+                ListAdapter listAdapter = new ListAdapter(listposts, MenuLateralActivity.this);
+                RecyclerView recyclerView = findViewById(R.id.listRecyclerView);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(MenuLateralActivity.this));
+                recyclerView.setAdapter(listAdapter);
             }
 
             @Override

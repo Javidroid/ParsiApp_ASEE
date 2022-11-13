@@ -66,7 +66,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                     .into(userImage)
             ;
             nombre.setText(item.getAuthorUsername());
-            userName.setText(item.getAuthorUsername());
+            userName.setText("@" + item.getAuthorUsername());
             time.setText(item.getTimestamp());
             tweet.setText(item.getContenido());
         }
