@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="es.unex.parsiapp.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="es.unex.parsiapp.ui.gallery.ColeccionFragment"
+        android:label="@string/menu_coleccion"
+        tools:layout="@layout/fragment_coleccion" />
 
     <fragment
         android:id="@+id/nav_slideshow"

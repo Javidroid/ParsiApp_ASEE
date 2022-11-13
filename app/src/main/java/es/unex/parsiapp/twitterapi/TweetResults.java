@@ -77,7 +77,6 @@ public class TweetResults {
                     p.setProfilePicture(u.getProfileImageUrl());
                 }
             }
-            System.out.println(d.getCreatedAt());
             String[] tiempo = d.getCreatedAt().split("T")[1].split(":");
             p.setTimestamp(tiempo[0]+":"+tiempo[1]);
 

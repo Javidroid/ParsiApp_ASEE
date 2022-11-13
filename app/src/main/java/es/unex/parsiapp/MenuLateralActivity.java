@@ -1,5 +1,6 @@
 package es.unex.parsiapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -87,12 +88,15 @@ public class MenuLateralActivity extends AppCompatActivity{
                 || super.onSupportNavigateUp();
     }
 
-
     @Override
     protected void onDestroy() {
         ParsiDatabase.getInstance(this).close();
         super.onDestroy();
     }
 
+    public void onCreateFolderButton(View v){
+        Intent intent = new Intent(MenuLateralActivity.this, CreateFolderActivity.class);
+        startActivity(intent);
+    }
 
 }
