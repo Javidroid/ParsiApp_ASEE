@@ -1,28 +1,24 @@
 package es.unex.parsiapp;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
+import android.view.View;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
-import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.twitterapi.Datum;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import retrofit2.Call;
@@ -45,7 +41,7 @@ public class MenuLateralActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMenuLateral.toolbar);
-        binding.appBarMenuLateral.fab.setOnClickListener(new View.OnClickListener() {
+        binding.appBarMenuLateral.toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
