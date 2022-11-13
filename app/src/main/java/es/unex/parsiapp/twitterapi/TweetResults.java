@@ -1,10 +1,11 @@
 
 package es.unex.parsiapp.twitterapi;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import es.unex.parsiapp.model.Post;
 
@@ -72,7 +73,8 @@ public class TweetResults {
             p.setContenido(d.getText());
             p.setAuthorUsername(this.includes.getUsers().get(i).getUsername());
             p.setProfilePicture(this.includes.getUsers().get(i).getProfileImageUrl());
-            p.setTimestamp(d.getCreatedAt());
+            String tiempo[] = d.getCreatedAt().split("T")[1].split(":");
+            p.setTimestamp(tiempo[0]+":"+tiempo[1]);
 
             postList.add(p);
             i++;
