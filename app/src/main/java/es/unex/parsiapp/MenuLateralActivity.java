@@ -10,34 +10,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.List;
-
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
-import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.twitterapi.TweetResults;
-import es.unex.parsiapp.twitterapi.TwitterService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MenuLateralActivity extends AppCompatActivity{
-    private List<Post> listposts;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://api.twitter.com/2/tweets/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +49,6 @@ public class MenuLateralActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        loadPosts();
 
         // --- BD --- //
         // NO se pueden hacer llamadas a la BD en el hilo principal
@@ -105,11 +87,6 @@ public class MenuLateralActivity extends AppCompatActivity{
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    protected void onResume() {
-        loadPosts();
-        super.onResume();
-    }
 
     @Override
     protected void onDestroy() {
@@ -117,31 +94,5 @@ public class MenuLateralActivity extends AppCompatActivity{
         super.onDestroy();
     }
 
-    public void loadPosts(){
-        // --- API --- //
-        // NO se pueden hacer llamadas a la API en el hilo principal
-        TwitterService twitterService = retrofit.create(TwitterService.class);
 
-        // Hacer un .enqueue es equivalente a llamarla en un hilo separado
-        twitterService.tweetResults("Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
-            @Override
-            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
-                System.out.println(response.body().getData().size());
-                TweetResults tweetResults = response.body();
-                // Conversion a lista de Posts de los tweets recibidos
-                listposts = tweetResults.toPostList();
-
-                ListAdapter listAdapter = new ListAdapter(listposts, MenuLateralActivity.this);
-                RecyclerView recyclerView = findViewById(R.id.listRecyclerView);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(MenuLateralActivity.this));
-                recyclerView.setAdapter(listAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<TweetResults> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
 }

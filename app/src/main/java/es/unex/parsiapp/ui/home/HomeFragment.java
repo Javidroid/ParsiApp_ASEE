@@ -8,12 +8,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
+import es.unex.parsiapp.ListAdapter;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
+import es.unex.parsiapp.model.Post;
+import es.unex.parsiapp.twitterapi.TweetResults;
+import es.unex.parsiapp.twitterapi.TwitterService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-
+    private List<Post> listposts;
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://api.twitter.com/2/tweets/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
     private FragmentHomeBinding binding;
+    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -23,10 +42,33 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        // --- API --- //
+        // NO se pueden hacer llamadas a la API en el hilo principal
+        TwitterService twitterService = retrofit.create(TwitterService.class);
+
+        // Hacer un .enqueue es equivalente a llamarla en un hilo separado
+        twitterService.tweetResults("Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+            @Override
+            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
+                System.out.println(response.body().getData().size());
+                TweetResults tweetResults = response.body();
+                // Conversion a lista de Posts de los tweets recibidos
+                listposts = tweetResults.toPostList();
+
+                ListAdapter listAdapter = new ListAdapter(listposts, root.getContext());
+                RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                recyclerView.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<TweetResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
         return root;
     }
-
-
 
     @Override
     public void onDestroyView() {
