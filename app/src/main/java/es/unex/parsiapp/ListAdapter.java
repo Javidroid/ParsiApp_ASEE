@@ -63,6 +63,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         void bindData(@NonNull final Post item) {
             Picasso.get()
                     .load(item.getProfilePicture())
+                    .error(R.mipmap.ic_launcher_round)
+                    .fit()
                     .into(userImage)
             ;
             nombre.setText(item.getAuthorUsername());
