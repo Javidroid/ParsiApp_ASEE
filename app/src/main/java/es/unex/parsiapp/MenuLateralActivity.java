@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -15,12 +16,17 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
+
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
+import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class MenuLateralActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
+    // Add a Carpeta Request Code
+    private static final int ADD_CARPETA_REQUEST = 0;
 
 
     @Override
@@ -61,9 +67,11 @@ public class MenuLateralActivity extends AppCompatActivity{
 
                 // Operaciones BD
 
-                // TODO Aqui borro ahora para quitar los cambios a la BD pero esto hay que quitarlo
-                database.getPostDao().deleteAll();
-                database.getCarpetaDao().deleteAll();
+                List<Carpeta> carpetaList = database.getCarpetaDao().getAll();
+                System.out.println("/// CARPETAS USUARIO ///");
+                for(Carpeta c: carpetaList){
+                    System.out.println(c.getNombre());
+                }
             }
         });
 
@@ -94,9 +102,36 @@ public class MenuLateralActivity extends AppCompatActivity{
         super.onDestroy();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("Entered onActivityResult()");
+        if (requestCode == ADD_CARPETA_REQUEST){
+            if (resultCode == RESULT_OK){
+                String folderName = data.getExtras().getString("foldername");
+                createFolder(folderName);
+            }
+        }
+    }
+
     public void onCreateFolderButton(View v){
         Intent intent = new Intent(MenuLateralActivity.this, CreateFolderActivity.class);
         startActivity(intent);
+    }
+
+    public void createFolder(String folderName){
+        Carpeta c = new Carpeta(folderName);
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
+                long id = database.getCarpetaDao().insert(c);
+                System.out.println("CARPETA CON NOMBRE " + c.getNombre() + " CREADA EXITOSAMENTE. TOTAL CARPETAS = " + database.getCarpetaDao().getAll().size());
+                c.setIdDb(id);
+            }
+        });
     }
 
 }
