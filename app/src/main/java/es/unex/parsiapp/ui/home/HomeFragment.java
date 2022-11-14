@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import es.unex.parsiapp.ListAdapter;
+import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Post;
@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
                 // Conversion a lista de Posts de los tweets recibidos
                 listposts = tweetResults.toPostList();
 
-                ListAdapter listAdapter = new ListAdapter(listposts, root.getContext());
+                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
                 RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
