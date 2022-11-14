@@ -1,5 +1,6 @@
 package es.unex.parsiapp;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -23,7 +24,7 @@ public class CreateFolderActivity extends AppCompatActivity {
         String folderName = fname.getText().toString();
         Intent myIntent = new Intent(CreateFolderActivity.this, MenuLateralActivity.class);
         myIntent.putExtra("foldername", folderName);
-        startActivityForResult(myIntent, 0);
+        startActivity(myIntent);
     }
 
     @Override

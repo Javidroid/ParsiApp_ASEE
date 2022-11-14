@@ -1,10 +1,15 @@
 package es.unex.parsiapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,9 +30,6 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 public class MenuLateralActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMenuLateralBinding binding;
-    // Add a Carpeta Request Code
-    private static final int ADD_CARPETA_REQUEST = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,12 @@ public class MenuLateralActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        // TODO Esto es para crear carpetas. Es MUY cutre. Más cutre que Ponte.
+        // Mejor cambiar la creación de carpetas a un Fragment y de ahí hacer las cosas
+        // uwu
+        if(this.getIntent().getStringExtra("foldername") != null){
+            createFolder(this.getIntent().getStringExtra("foldername"));
+        }
 
         // --- BD --- //
         // NO se pueden hacer llamadas a la BD en el hilo principal
@@ -66,7 +74,7 @@ public class MenuLateralActivity extends AppCompatActivity{
                 ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
 
                 // Operaciones BD
-
+                // Muestro las carpetas el usuario (esto era para ver si funcionaba, se puede quitar)
                 List<Carpeta> carpetaList = database.getCarpetaDao().getAll();
                 System.out.println("/// CARPETAS USUARIO ///");
                 for(Carpeta c: carpetaList){
@@ -80,7 +88,11 @@ public class MenuLateralActivity extends AppCompatActivity{
 
     }
 
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        System.out.println("-------> INTENT DATA: " + intent.getStringExtra("foldername"));
+        super.onNewIntent(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,17 +114,6 @@ public class MenuLateralActivity extends AppCompatActivity{
         super.onDestroy();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("Entered onActivityResult()");
-        if (requestCode == ADD_CARPETA_REQUEST){
-            if (resultCode == RESULT_OK){
-                String folderName = data.getExtras().getString("foldername");
-                createFolder(folderName);
-            }
-        }
-    }
 
     public void onCreateFolderButton(View v){
         Intent intent = new Intent(MenuLateralActivity.this, CreateFolderActivity.class);

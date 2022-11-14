@@ -42,6 +42,13 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        showTweetsFromColumna(root);
+        return root;
+    }
+
+    /* Para mostrar los tweets en la columna. Se realiza la llamada especificada
+    * en twitterService.[llamada] */
+    public void showTweetsFromColumna(View root){
         // --- API --- //
         // NO se pueden hacer llamadas a la API en el hilo principal
         TwitterService twitterService = retrofit.create(TwitterService.class);
@@ -67,7 +74,11 @@ public class HomeFragment extends Fragment {
                 t.printStackTrace();
             }
         });
-        return root;
+    }
+
+    // Esto es un metodo dummy para acordarme de luego hacerlo
+    public void addPostToCarpeta(){
+
     }
 
     @Override
@@ -75,4 +86,6 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
 }
