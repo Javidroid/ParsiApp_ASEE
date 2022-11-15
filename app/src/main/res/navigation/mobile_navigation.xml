@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_coleccion" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="es.unex.parsiapp.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_settings"
+        android:name="es.unex.parsiapp.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
