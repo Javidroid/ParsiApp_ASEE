@@ -26,6 +26,7 @@ import java.util.List;
 
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class MenuLateralActivity extends AppCompatActivity{
@@ -86,7 +87,7 @@ public class MenuLateralActivity extends AppCompatActivity{
 
         // --- Testeo en la UI ---
         // esto borradlo o lo que querais
-        
+
     }
 
     @Override
