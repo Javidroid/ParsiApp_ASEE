@@ -53,18 +53,16 @@ public class ColeccionFragment extends Fragment {
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
 
                 listCarpeta = database.getCarpetaDao().getAll();
-                for(Carpeta c: listCarpeta){
-                    System.out.println("----------> CARPETA " + c.getNombre());
+
+                if(listCarpeta != null) {
+                    ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext());
+                    RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                    recyclerView.setAdapter(listAdapter);
                 }
             }
         });
-        if(listCarpeta != null) {
-            ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext());
-            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-            recyclerView.setAdapter(listAdapter);
-        }
     }
 
     @Override
