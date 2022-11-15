@@ -11,12 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Post;
+import es.unex.parsiapp.twitterapi.SingleTweet;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import retrofit2.Call;
@@ -28,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeFragment extends Fragment {
     private List<Post> listposts;
     private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://api.twitter.com/2/tweets/")
+            .baseUrl("https://api.twitter.com/2/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     private FragmentHomeBinding binding;
@@ -54,10 +56,11 @@ public class HomeFragment extends Fragment {
         TwitterService twitterService = retrofit.create(TwitterService.class);
 
         // Hacer un .enqueue es equivalente a llamarla en un hilo separado
-        twitterService.tweetResults("Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+        String query = "valorant"; // -> TODO Concepto a buscar, se debe de sacar del filtro EditText establecido al crear la columna
+
+        twitterService.tweetsFromQuery(query,"Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
             @Override
             public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
-                System.out.println(response.body().getData().size());
                 TweetResults tweetResults = response.body();
                 // Conversion a lista de Posts de los tweets recibidos
                 listposts = tweetResults.toPostList();
@@ -74,6 +77,30 @@ public class HomeFragment extends Fragment {
                 t.printStackTrace();
             }
         });
+
+
+        // Ejemplo de obtener un Tweet en base a su ID:
+        /*
+        twitterService.tweetFromID("1590012633410727937","Bearer " + bearerTokenApi).enqueue(new Callback<SingleTweet>() {
+            @Override
+            public void onResponse(Call<SingleTweet> call, Response<SingleTweet> response) {
+                SingleTweet tweet = response.body();
+                // Conversion a lista de Posts de los tweets recibidos
+                listposts = new ArrayList<Post>();
+                listposts.add(tweet.toPost());
+
+                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
+                RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                recyclerView.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<SingleTweet> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });*/
     }
 
     // Esto es un metodo dummy para acordarme de luego hacerlo

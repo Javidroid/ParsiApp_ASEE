@@ -64,9 +64,7 @@ public class TweetResults {
         Metodo para pasar un objeto TweetResults a una lista de Posts
      */
     public List<Post> toPostList(){
-        int i = 0;
         List<Post> postList = new ArrayList<Post>();
-
         for(Datum d: this.data){
             Post p = new Post(d.getId());
             p.setAuthorId(d.getAuthorId());
@@ -81,7 +79,6 @@ public class TweetResults {
             p.setTimestamp(tiempo[0]+":"+tiempo[1]);
 
             postList.add(p);
-            i++;
         }
         return postList;
     }
