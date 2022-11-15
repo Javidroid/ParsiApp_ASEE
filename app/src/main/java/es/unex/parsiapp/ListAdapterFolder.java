@@ -31,7 +31,7 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
     //Establece el diseño que tiene que tener cada carpeta al mostrarse
     @Override
     public ListAdapterFolder.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View view = mInlfater.inflate(R.layout.list_tweet, null);
+        View view = mInlfater.inflate(R.layout.list_folder, null);
         return new ListAdapterFolder.ViewHolder(view);
     }
 

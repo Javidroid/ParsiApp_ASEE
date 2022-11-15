@@ -22,9 +22,11 @@ public class CreateFolderActivity extends AppCompatActivity {
     public void onConfirmCreateFolderButton(View v){
         EditText fname = findViewById(R.id.folderName);
         String folderName = fname.getText().toString();
-        Intent myIntent = new Intent(CreateFolderActivity.this, MenuLateralActivity.class);
-        myIntent.putExtra("foldername", folderName);
-        startActivity(myIntent);
+        if(folderName.length() > 0) {
+            Intent myIntent = new Intent(CreateFolderActivity.this, MenuLateralActivity.class);
+            myIntent.putExtra("foldername", folderName);
+            startActivity(myIntent);
+        }
     }
 
     @Override

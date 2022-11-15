@@ -11,17 +11,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.CreateFolderActivity;
+import es.unex.parsiapp.ListAdapterFolder;
+import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentColeccionBinding;
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class ColeccionFragment extends Fragment {
 
+    private List<Carpeta> listCarpeta;
     private FragmentColeccionBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -32,9 +40,31 @@ public class ColeccionFragment extends Fragment {
         binding = FragmentColeccionBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        showCarpetas(root);
+
         return root;
+    }
+
+    public void showCarpetas(View root){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
+
+                listCarpeta = database.getCarpetaDao().getAll();
+                for(Carpeta c: listCarpeta){
+                    System.out.println("----------> CARPETA " + c.getNombre());
+                }
+            }
+        });
+        if(listCarpeta != null) {
+            ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext());
+            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(listAdapter);
+        }
     }
 
     @Override
