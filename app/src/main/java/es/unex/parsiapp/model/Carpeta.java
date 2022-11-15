@@ -5,10 +5,11 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(tableName="carpeta")
-public class Carpeta {
+public class Carpeta implements Serializable{
 
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID en la BD

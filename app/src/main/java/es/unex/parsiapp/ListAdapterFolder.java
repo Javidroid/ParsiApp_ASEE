@@ -17,11 +17,17 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
     private List<Carpeta> mData;
     private LayoutInflater mInlfater;
     private Context context;
+    final ListAdapterFolder.OnItemClickListener listener;
 
-    public ListAdapterFolder(List<Carpeta> folderList, Context context){
+    public interface OnItemClickListener {
+        void onItemClick(Carpeta item);
+    }
+
+    public ListAdapterFolder(List<Carpeta> folderList, Context context, ListAdapterFolder.OnItemClickListener listener){
         this.mInlfater = LayoutInflater.from(context);
         this.context = context;
         this.mData = folderList;
+        this.listener = listener;
     }
 
     //Obtiene el numero de carpeta que hay en una lista
@@ -54,6 +60,12 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
 
         void bindData(@NonNull final Carpeta item) {
             nombre.setText(item.getNombre());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 }

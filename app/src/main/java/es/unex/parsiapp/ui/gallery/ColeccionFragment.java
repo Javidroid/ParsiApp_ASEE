@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,15 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.CreateFolderActivity;
 import es.unex.parsiapp.EditFolderActivity;
 import es.unex.parsiapp.ListAdapterFolder;
-import es.unex.parsiapp.ListAdapterPost;
-import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentColeccionBinding;
 import es.unex.parsiapp.model.Carpeta;
-import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class ColeccionFragment extends Fragment {
@@ -56,7 +50,12 @@ public class ColeccionFragment extends Fragment {
                 listCarpeta = database.getCarpetaDao().getAll();
 
                 if(listCarpeta != null) {
-                    ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext());
+                    ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext(), new ListAdapterFolder.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Carpeta item) {
+                            moveToFolderContent(item, root);
+                        }
+                    });
                     RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -91,6 +90,13 @@ public class ColeccionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+
+    public void moveToFolderContent(Carpeta item, View root){
+        Intent intent = new Intent(root.getContext(), folderContentFragment.class);
+        intent.putExtra("ContenidoCarpeta", item);
+        startActivity(intent);
     }
 
 }
