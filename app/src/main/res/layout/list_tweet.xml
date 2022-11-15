@@ -120,6 +120,13 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/tweetID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/descriptionTweet"
+                    android:visibility="gone" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="0.8dp"
@@ -147,7 +154,8 @@
                         app:layout_constraintHorizontal_bias="0.25"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:ignore="MissingConstraints,TouchTargetSizeCheck"
-                        tools:layout_editor_absoluteY="3dp" />
+                        tools:layout_editor_absoluteY="3dp"
+                        android:tag=""/>
 
                     <ImageButton
                         android:id="@+id/save"
@@ -157,11 +165,13 @@
                         android:background="@drawable/ic_baseline_save_alt_24"
                         android:layout_marginStart="5dp"
                         android:scaleType="centerCrop"
+                        android:onClick="addPostToCarpeta"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.75"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:ignore="MissingConstraints, TouchTargetSizeCheck"
-                        tools:layout_editor_absoluteY="3dp" />
+                        tools:layout_editor_absoluteY="3dp"
+                        android:tag=""/>
                 </androidx.constraintlayout.widget.ConstraintLayout >
             </LinearLayout>
         </RelativeLayout>

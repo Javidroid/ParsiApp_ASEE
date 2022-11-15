@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,8 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView userImage;
-        TextView nombre, userName, time, tweet;
+        TextView nombre, userName, time, tweet, tweetID;
+        ImageButton share, save;
 
         ViewHolder(View itemView){
             super(itemView);
@@ -58,6 +60,9 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
             userName = itemView.findViewById(R.id.userNameView);
             time = itemView.findViewById(R.id.timeView);
             tweet = itemView.findViewById(R.id.tweetView);
+            tweetID = itemView.findViewById(R.id.tweetID);
+            share = itemView.findViewById(R.id.share);
+            save = itemView.findViewById(R.id.save);
         }
 
         void bindData(@NonNull final Post item) {
@@ -71,6 +76,9 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
             userName.setText("@" + item.getAuthorUsername());
             time.setText(item.getTimestamp());
             tweet.setText(item.getContenido());
+            tweetID.setText(item.getId());
+            share.setTag(R.string.idShare, item.getId());
+            save.setTag(R.string.idSave, item.getId());
         }
     }
 }

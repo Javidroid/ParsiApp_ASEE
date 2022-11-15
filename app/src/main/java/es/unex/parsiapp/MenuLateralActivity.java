@@ -80,7 +80,7 @@ public class MenuLateralActivity extends AppCompatActivity{
                 List<Carpeta> carpetaList = database.getCarpetaDao().getAll();
                 System.out.println("/// CARPETAS USUARIO ///");
                 for(Carpeta c: carpetaList){
-                    System.out.println(c.getNombre());
+                    System.out.println(c.getNombre() + " - " + c.getIdDb());
                 }
             }
         });
@@ -145,6 +145,24 @@ public class MenuLateralActivity extends AppCompatActivity{
 
         Intent shareIntent = Intent.createChooser(intent, null);
         startActivity(shareIntent);
+    }
+
+    public void addPostToCarpeta(View v){
+        long carpeta_id = 1;
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
+
+                ImageButton imgButton = (ImageButton) v;
+                String post_id = (String) imgButton.getTag(R.string.idSave);
+                System.out.println("POST ID A SER GUARDADO: " + post_id);
+
+                Post p = new Post(post_id, carpeta_id);
+                database.getPostDao().insert(p);
+            }
+        });
     }
 
 }
