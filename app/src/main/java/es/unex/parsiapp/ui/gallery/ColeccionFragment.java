@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,9 +96,16 @@ public class ColeccionFragment extends Fragment {
 
 
     public void moveToFolderContent(Carpeta item, View root){
-        Intent intent = new Intent(root.getContext(), folderContentFragment.class);
+        /*Intent intent = new Intent(root.getContext(), folderContentFragment.class);
         intent.putExtra("ContenidoCarpeta", item);
-        startActivity(intent);
+        startActivity(intent);*/
+
+        Fragment fragment = new folderContentFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment_content_menu_lateral, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 }
