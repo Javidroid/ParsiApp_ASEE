@@ -55,7 +55,7 @@ public class ColeccionFragment extends Fragment {
                     ListAdapterFolder listAdapter = new ListAdapterFolder(listCarpeta, root.getContext(), new ListAdapterFolder.OnItemClickListener() {
                         @Override
                         public void onItemClick(Carpeta item) {
-                            moveToFolderContent(item, root);
+                            moveToFolderContent(item);
                         }
                     });
                     RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
@@ -95,12 +95,12 @@ public class ColeccionFragment extends Fragment {
     }
 
 
-    public void moveToFolderContent(Carpeta item, View root){
+    public void moveToFolderContent(Carpeta item){
         /*Intent intent = new Intent(root.getContext(), folderContentFragment.class);
         intent.putExtra("ContenidoCarpeta", item);
         startActivity(intent);*/
 
-        Fragment fragment = new folderContentFragment();
+        Fragment fragment = new folderContentFragment(item.getIdDb());
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.nav_host_fragment_content_menu_lateral, fragment);
