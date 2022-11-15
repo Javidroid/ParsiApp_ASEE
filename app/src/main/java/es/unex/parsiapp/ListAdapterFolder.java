@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.imageview.ShapeableImageView;
-
 import java.util.List;
 
 import es.unex.parsiapp.model.Carpeta;
@@ -47,16 +45,15 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ShapeableImageView userImage;
-        TextView nombre, userName, time, tweet;
+        TextView nombre;
 
         ViewHolder(View itemView){
             super(itemView);
-
+            nombre = itemView.findViewById(R.id.nameFolderView);
         }
 
         void bindData(@NonNull final Carpeta item) {
-
+            nombre.setText(item.getNombre());
         }
     }
 }
