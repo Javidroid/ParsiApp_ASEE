@@ -6,15 +6,99 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
+    app:cardCornerRadius="20dp"
+    android:layout_marginBottom="5dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
+
         android:orientation="vertical">
-        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            tools:ignore="UselessParent">
+
+            <ImageView
+                android:id="@+id/iconImageView"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:srcCompat="@drawable/ic_baseline_folder_24"
+                />
+
+            <LinearLayout
+                android:id="@+id/folderNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_toEndOf="@+id/iconImageView"
+                android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/nameFolderView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:maxLength="50"
+                        android:minLength="1"
+                        android:maxLines="1"
+                        android:text="@string/nombreCarpeta"
+                        android:textColor="@android:color/black"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0.8dp"
+                        android:background="#8c8c8c"
+                        android:layout_marginBottom="10dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/deleteFolder"
+                        android:layout_width="88dp"
+                        android:layout_height="55dp"
+                        android:text="@string/borrarCarpeta"
+                        android:textSize="12sp"
+                        android:textColor="#ff6565"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.10"
+                        app:layout_constraintStart_toStartOf="parent"
+                        style="?attr/materialButtonOutlinedStyle"
+                        tools:ignore="MissingConstraints">
+                    </Button>
+
+                    <Button
+                        android:id="@+id/editFolder"
+                        android:layout_width="88dp"
+                        android:layout_height="55dp"
+                        android:text="@string/editarCarpeta"
+                        android:textSize="12sp"
+                        android:textColor="#77dd77"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.90"
+                        app:layout_constraintStart_toStartOf="parent"
+                        style="?attr/materialButtonOutlinedStyle"
+                        tools:ignore="MissingConstraints">
+                    </Button>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

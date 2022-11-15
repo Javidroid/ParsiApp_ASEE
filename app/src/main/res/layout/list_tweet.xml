@@ -134,25 +134,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/share"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:background="@drawable/ic_baseline_share_24"
                         android:contentDescription="@string/compartir"
+                        android:layout_marginEnd="5dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.25"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:ignore="MissingConstraints,TouchTargetSizeCheck"
                         tools:layout_editor_absoluteY="3dp" />
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/save"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:background="@drawable/ic_baseline_save_alt_24"
                         android:contentDescription="@string/guardartweet"
-                        android:textAlignment="@+id/buttons"
+                        android:background="@drawable/ic_baseline_save_alt_24"
+                        android:layout_marginStart="5dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.75"
                         app:layout_constraintStart_toStartOf="parent"
