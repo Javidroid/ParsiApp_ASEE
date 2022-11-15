@@ -21,4 +21,7 @@
     <string name="descriptionTweet">Tweet</string>
     <string name="compartir">Compartir</string>
     <string name="guardartweet">guardarTweet</string>
+    <string name="nombreCarpeta">Carpeta</string>
+    <string name="editarCarpeta">Editar</string>
+    <string name="borrarCarpeta">Borrar</string>
 </resources>
