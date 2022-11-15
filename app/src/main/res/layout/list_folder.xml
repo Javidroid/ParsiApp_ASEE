@@ -51,7 +51,6 @@
                         android:layout_marginBottom="2dp"
                         android:ellipsize="end"
                         android:maxLength="50"
-                        android:minLength="1"
                         android:maxLines="1"
                         android:text="@string/nombreCarpeta"
                         android:textColor="@android:color/black"
