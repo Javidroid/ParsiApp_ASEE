@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -85,7 +86,7 @@ public class MenuLateralActivity extends AppCompatActivity{
 
         // --- Testeo en la UI ---
         // esto borradlo o lo que querais
-
+        
     }
 
     @Override
@@ -133,6 +134,16 @@ public class MenuLateralActivity extends AppCompatActivity{
                 c.setIdDb(id);
             }
         });
+    }
+
+    public void compartirPost(View v){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Poner aqui enlace del tweet");
+        intent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(intent, null);
+        startActivity(shareIntent);
     }
 
 }

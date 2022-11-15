@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,16 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         showTweetsFromColumna(root);
+
+        // Boton de Refresh
+        Button b = (Button) root.findViewById(R.id.refresh_button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTweetsFromColumna(root);
+            }
+        });
+
         return root;
     }
 

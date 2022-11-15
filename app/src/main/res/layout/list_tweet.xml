@@ -142,6 +142,7 @@
                         android:contentDescription="@string/compartir"
                         android:layout_marginEnd="5dp"
                         android:scaleType="centerCrop"
+                        android:onClick="compartirPost"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.25"
                         app:layout_constraintStart_toStartOf="parent"

@@ -22,6 +22,8 @@ public interface CarpetaDao {
     public long insert(Carpeta item);
     @Query("DELETE FROM carpeta")
     public void deleteAll();
+    @Query("DELETE FROM carpeta WHERE idDb = :carpeta_id")
+    public void deleteFolderByID(long carpeta_id);
     @Update
     public int update(Carpeta item);
 }

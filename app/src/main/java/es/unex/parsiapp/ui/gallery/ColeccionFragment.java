@@ -18,6 +18,7 @@ import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.CreateFolderActivity;
+import es.unex.parsiapp.EditFolderActivity;
 import es.unex.parsiapp.ListAdapterFolder;
 import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.MenuLateralActivity;
@@ -63,6 +64,27 @@ public class ColeccionFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void borrarCarpeta(View v){
+        System.out.println("/// Borrar Carpeta ///");
+        // Obtener id de la carpeta
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
+                // Cambiar 0 por ID carpeta
+                database.getCarpetaDao().deleteFolderByID(0);
+            }
+        });
+        // Actualizar vista
+    }
+
+    public void editarCarpeta(View v){
+        Intent intent = new Intent(getActivity(), EditFolderActivity.class);
+        // Añadir Extra con el nombre actual de la carpeta
+        startActivity(intent);
     }
 
     @Override
