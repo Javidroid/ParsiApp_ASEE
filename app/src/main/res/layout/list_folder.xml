@@ -89,10 +89,12 @@
                         android:textSize="12sp"
                         android:textColor="#77dd77"
                         android:textStyle="bold"
+                        android:onClick="onEditFolderButton"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.90"
                         app:layout_constraintStart_toStartOf="parent"
                         style="?attr/materialButtonOutlinedStyle"
+                        android:tag=""
                         tools:ignore="MissingConstraints">
                     </Button>
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,8 @@ import es.unex.parsiapp.model.Post;
 public interface CarpetaDao {
     @Query("SELECT * FROM carpeta")
     public List<Carpeta> getAll();
+    @Query("SELECT * FROM carpeta WHERE idDb = :carpeta_id")
+    public Carpeta getFolder(long carpeta_id);
     // TODO get posts by idcarpeta
     @Query("SELECT * FROM post WHERE carpetaid = :carpeta_id")
     public List<Post> getAllPostsFromCarpeta(long carpeta_id);

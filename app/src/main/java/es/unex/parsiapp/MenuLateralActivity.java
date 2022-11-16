@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResult;
@@ -63,8 +64,12 @@ public class MenuLateralActivity extends AppCompatActivity{
         // TODO Esto es para crear carpetas. Es MUY cutre. Más cutre que Ponte.
         // Mejor cambiar la creación de carpetas a un Fragment y de ahí hacer las cosas
         // uwu
+        long idSupp = 0;
         if(this.getIntent().getStringExtra("foldername") != null){
             createFolder(this.getIntent().getStringExtra("foldername"));
+        } else if (this.getIntent().getStringExtra("editedfoldername") != null){
+            long id = this.getIntent().getLongExtra("idfolder", idSupp);
+            editFolder(this.getIntent().getStringExtra("editedfoldername"), id);
         }
 
         // --- BD --- //
@@ -122,6 +127,17 @@ public class MenuLateralActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void onEditFolderButton(View v){
+        Button b = (Button) v;
+        String folderName = (String) b.getTag(R.string.idEdit);
+        long idFolder = (long) b.getTag(R.string.idFolder);
+
+        Intent intent = new Intent(MenuLateralActivity.this, EditFolderActivity.class);
+        intent.putExtra("foldername", folderName);
+        intent.putExtra("idfolder", idFolder);
+        startActivity(intent);
+    }
+
     public void createFolder(String folderName){
         Carpeta c = new Carpeta(folderName);
 
@@ -133,6 +149,20 @@ public class MenuLateralActivity extends AppCompatActivity{
                 long id = database.getCarpetaDao().insert(c);
                 System.out.println("CARPETA CON NOMBRE " + c.getNombre() + " CREADA EXITOSAMENTE. TOTAL CARPETAS = " + database.getCarpetaDao().getAll().size());
                 c.setIdDb(id);
+            }
+        });
+    }
+
+    public void editFolder(String folderName, long idfolder){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(MenuLateralActivity.this);
+                Carpeta c = database.getCarpetaDao().getFolder(idfolder);
+                c.setNombre(folderName);
+                database.getCarpetaDao().update(c);
+                System.out.println("CARPETA EDITADA EXITOSAMENTE");
             }
         });
     }

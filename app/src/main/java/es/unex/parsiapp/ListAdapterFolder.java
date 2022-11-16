@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,14 +53,18 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nombre;
+        Button b;
 
         ViewHolder(View itemView){
             super(itemView);
             nombre = itemView.findViewById(R.id.nameFolderView);
+            b = itemView.findViewById(R.id.editFolder);
         }
 
         void bindData(@NonNull final Carpeta item) {
             nombre.setText(item.getNombre());
+            b.setTag(R.string.idEdit, item.getNombre());
+            b.setTag(R.string.idFolder, item.getIdDb());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
