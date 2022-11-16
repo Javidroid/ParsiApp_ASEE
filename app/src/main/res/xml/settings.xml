@@ -1,0 +1,49 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/settings_general">
+
+        <EditTextPreference
+            app:key="username"
+            app:title="@string/username"
+            app:icon="@drawable/ic_baseline_manage_accounts_24"
+            app:useSimpleSummaryProvider="true"/>
+
+        <ListPreference
+            app:defaultValue="es"
+            app:entries="@array/nombre_idiomas"
+            app:entryValues="@array/valor_idiomas"
+            app:key="idiomas"
+            app:title="@string/idioma"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="nightmode"
+            app:title="@string/nightmode"
+            app:icon="@drawable/ic_baseline_dark_mode_24" />
+
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="@string/notifications"
+            app:icon="@drawable/ic_baseline_notifications_24"
+            app:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_ayuda">
+
+        <Preference
+            app:title="Hacer una pregunta"
+            app:icon="@drawable/ic_baseline_question_mark_24" />
+
+        <Preference
+            app:title="Preguntas frecuentes"
+            app:icon="@drawable/ic_baseline_question_answer_24" />
+
+        <Preference
+            app:title="Política de privacidad"
+            app:icon="@drawable/ic_baseline_verified_user_24" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
