@@ -49,12 +49,14 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        // Elementos de la UI
         ShapeableImageView userImage;
         TextView nombre, userName, time, tweet, tweetID;
         ImageButton share, save;
 
         ViewHolder(View itemView){
             super(itemView);
+            // Obtencion de los elementos de la UI
             userImage = itemView.findViewById(R.id.iconImageView);
             nombre = itemView.findViewById(R.id.nameView);
             userName = itemView.findViewById(R.id.userNameView);
@@ -66,6 +68,7 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
         }
 
         void bindData(@NonNull final Post item) {
+            // Llamada a Picasso para generar la imagen en base a la URL de la foto de perfil
             Picasso.get()
                     .load(item.getProfilePicture())
                     .error(R.mipmap.ic_launcher_round)
@@ -77,6 +80,7 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
             time.setText(item.getTimestamp());
             tweet.setText(item.getContenido());
             tweetID.setText(item.getId());
+            // Establece el ID del post en los botones de share y save
             share.setTag(R.string.idShare, item.getId());
             save.setTag(R.string.idSave, item.getId());
         }

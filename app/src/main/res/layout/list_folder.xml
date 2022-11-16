@@ -78,7 +78,8 @@
                         app:layout_constraintHorizontal_bias="0.10"
                         app:layout_constraintStart_toStartOf="parent"
                         style="?attr/materialButtonOutlinedStyle"
-                        tools:ignore="MissingConstraints">
+                        tools:ignore="MissingConstraints"
+                        android:tag="">
                     </Button>
 
                     <Button

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -58,17 +59,26 @@ public class ColeccionFragment extends Fragment {
                             moveToFolderContent(item);
                         }
                     });
-                    RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-                    recyclerView.setHasFixedSize(true);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-                    recyclerView.setAdapter(listAdapter);
+                    // La UI debe de ejecutarse en un mainThread (si no, peta)
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                            recyclerView.setAdapter(listAdapter);
+                        }
+                    });
                 }
             }
         });
     }
 
+    /*
     public void borrarCarpeta(View v){
         System.out.println("/// Borrar Carpeta ///");
+        Button b = (Button) v;
+        long idFolder = (long) b.getTag(R.string.idDelete);
         // Obtener id de la carpeta
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -76,17 +86,13 @@ public class ColeccionFragment extends Fragment {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
                 // Cambiar 0 por ID carpeta
-                database.getCarpetaDao().deleteFolderByID(0);
+                database.getCarpetaDao().deleteFolderByID(idFolder);
+                // Actualizar vista
+                View root = binding.getRoot();
+                showCarpetas(root);
             }
         });
-        // Actualizar vista
-    }
-
-    public void editarCarpeta(View v){
-        Intent intent = new Intent(getActivity(), EditFolderActivity.class);
-        // Añadir Extra con el nombre actual de la carpeta
-        startActivity(intent);
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -96,10 +102,6 @@ public class ColeccionFragment extends Fragment {
 
 
     public void moveToFolderContent(Carpeta item){
-        /*Intent intent = new Intent(root.getContext(), folderContentFragment.class);
-        intent.putExtra("ContenidoCarpeta", item);
-        startActivity(intent);*/
-
         Fragment fragment = new folderContentFragment(item.getIdDb());
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -52,19 +52,28 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        // Elementos de la UI
         TextView nombre;
-        Button b;
+        Button bEdit, bRemove;
 
         ViewHolder(View itemView){
             super(itemView);
+            // Obtencion de elementos de la UI
             nombre = itemView.findViewById(R.id.nameFolderView);
-            b = itemView.findViewById(R.id.editFolder);
+            bEdit = itemView.findViewById(R.id.editFolder);
+            bRemove = itemView.findViewById(R.id.deleteFolder);
         }
 
         void bindData(@NonNull final Carpeta item) {
+
             nombre.setText(item.getNombre());
-            b.setTag(R.string.idEdit, item.getNombre());
-            b.setTag(R.string.idFolder, item.getIdDb());
+
+            // Establece el nombre y ID de la carpeta en el boton de editar
+            bEdit.setTag(R.string.idEdit, item.getNombre());
+            bEdit.setTag(R.string.idFolder, item.getIdDb());
+
+            // Establece el ID de la carpeta en el boton de borrar
+            bRemove.setTag(R.string.idDelete, item.getIdDb());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
