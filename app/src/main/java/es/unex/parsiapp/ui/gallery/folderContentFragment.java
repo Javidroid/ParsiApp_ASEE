@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
@@ -21,10 +22,22 @@ import es.unex.parsiapp.databinding.FragmentFolderContentBinding;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
+import es.unex.parsiapp.twitterapi.SingleTweet;
+import es.unex.parsiapp.twitterapi.TwitterService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class folderContentFragment extends Fragment {
     private List<Post> listposts;
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://api.twitter.com/2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
     private FragmentFolderContentBinding binding;
     private long idCarpetaSeleccionada;
 
@@ -53,15 +66,36 @@ public class folderContentFragment extends Fragment {
             public void run() {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
+                List<Post> listaPostDB;
+                listposts = new ArrayList<Post>();
 
-                listposts = database.getCarpetaDao().getAllPostsFromCarpeta(idCarpetaSeleccionada);
+                listaPostDB = database.getCarpetaDao().getAllPostsFromCarpeta(idCarpetaSeleccionada);
 
-                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
-                RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                TwitterService twitterService = retrofit.create(TwitterService.class);
 
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-                recyclerView.setAdapter(listAdapter);
+                for(Post p: listaPostDB){
+                    twitterService.tweetFromID(p.getId(),"Bearer " + bearerTokenApi).enqueue(new Callback<SingleTweet>() {
+                        @Override
+                        public void onResponse(Call<SingleTweet> call, Response<SingleTweet> response) {
+                            System.out.println(response.errorBody());
+                            SingleTweet tweet = response.body();
+                            // Conversion a lista de Posts de los tweets recibidos
+                            listposts.add(tweet.toPost());
+
+                            ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
+                            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+
+                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                            recyclerView.setAdapter(listAdapter);
+                        }
+
+                        @Override
+                        public void onFailure(Call<SingleTweet> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                }
             }
         });
     }
