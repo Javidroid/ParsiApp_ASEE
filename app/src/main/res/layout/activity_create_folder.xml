@@ -22,10 +22,10 @@
 
     <Button
         android:id="@+id/create_folder_button"
-        android:onClick="onConfirmCreateFolderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:onClick="onConfirmCreateFolderButton"
+        android:text="Crear"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

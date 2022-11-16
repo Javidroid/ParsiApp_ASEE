@@ -20,6 +20,7 @@ public class CreateFolderActivity extends AppCompatActivity {
     }
 
     public void onConfirmCreateFolderButton(View v){
+        // todo buscar placeholder para lo de "Nueva Carpeta"
         EditText fname = findViewById(R.id.folderName);
         String folderName = fname.getText().toString();
         if(folderName.length() > 0) {
