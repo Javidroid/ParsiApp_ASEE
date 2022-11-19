@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,13 +17,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterPost;
+import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
+import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
+import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.tweetDetailsActivity;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
+import es.unex.parsiapp.twitterapi.User;
+import es.unex.parsiapp.twitterapi.UserData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,39 +77,25 @@ public class HomeFragment extends Fragment {
         // NO se pueden hacer llamadas a la API en el hilo principal
         TwitterService twitterService = retrofit.create(TwitterService.class);
 
-        String query = "valorant"; // -> TODO Concepto a buscar, se debe de sacar del filtro EditText establecido al crear la columna
-
-        // Hacer un .enqueue es equivalente a llamarla en un hilo separado
-        twitterService.tweetsFromQuery(query,"Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
-            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
-                TweetResults tweetResults = response.body();
-                // Conversion a lista de Posts de los tweets recibidos
-                listposts = tweetResults.toPostList();
+            public void run() {
+                // Declaracion de la instancia de la BD
+                ParsiDatabase database = ParsiDatabase.getInstance(getContext());
 
-                // Actualizar vista
-                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Post item) {
-                        showPost(item, root);
+                // Obtencion columna actual
+                Columna c = database.getColumnaDao().getColumnaActual();
+                if(c != null) {
+                    String query = c.getApiCall();
+                    // Hacer un .enqueue es equivalente a llamarla en un hilo separado
+                    if(c.getApiCallType() == Columna.ApiCallType.QUERY){
+                        tweetsFromQuery(twitterService, query, root);
+                    } else if (c.getApiCallType() == Columna.ApiCallType.USER){
+                        tweetsFromUser(twitterService, query, root);
                     }
-                });
-                RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-                recyclerView.setAdapter(listAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<TweetResults> call, Throwable t) {
-                t.printStackTrace();
+                }
             }
         });
-    }
-
-    // Esto es un metodo dummy para acordarme de luego hacerlo
-    public void addPostToCarpeta(){
-
     }
 
     @Override
@@ -114,7 +108,70 @@ public class HomeFragment extends Fragment {
         Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
         intent.putExtra("Post", item);
         startActivity(intent);
+    }
 
+    public void tweetsFromQuery(TwitterService twitterService, String query, View root){
+        twitterService.tweetsFromQuery(query,"Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+            @Override
+            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
+               onResponseTweets(response, root);
+            }
+
+            @Override
+            public void onFailure(Call<TweetResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void tweetsFromUser(TwitterService twitterService, String query, View root){
+        final String[] userId = {null};
+
+        twitterService.userIDfromUsername(query, "Bearer " + bearerTokenApi).enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                UserData udata = response.body();
+                if(udata == null){
+                    Toast.makeText(getContext(), "No se ha encontrado el usuario especificado en la columna", Toast.LENGTH_SHORT).show();
+                } else {
+                    userId[0] = udata.getData().getId();
+                    twitterService.tweetsFromUser(userId[0], "Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+                        @Override
+                        public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
+                            onResponseTweets(response, root);
+                        }
+
+                        @Override
+                        public void onFailure(Call<TweetResults> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void onResponseTweets(Response<TweetResults> response, View root){
+        TweetResults tweetResults = response.body();
+        // Conversion a lista de Posts de los tweets recibidos
+        listposts = tweetResults.toPostList();
+
+        // Actualizar vista
+        ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
+            @Override
+            public void onItemClick(Post item) {
+                showPost(item, root);
+            }
+        });
+        RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        recyclerView.setAdapter(listAdapter);
     }
 
 }

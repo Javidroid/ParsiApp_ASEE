@@ -37,7 +37,7 @@
         android:id="@+id/create_column_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onConfirmCreateFolderButton"
+        android:onClick="onConfirmCreateColumnButton"
         android:text="Crear"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,12 +62,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:onClick="onRadioButtonClicked"
             android:text="Búsqueda" />
 
         <RadioButton
             android:id="@+id/user_selection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="Usuario" />
     </RadioGroup>
 

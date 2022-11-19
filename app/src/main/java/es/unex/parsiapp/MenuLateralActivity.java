@@ -116,6 +116,13 @@ public class MenuLateralActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    // Accion al pulsar el boton de "crear columna"
+    public void onCreateColumnButton(View v){
+        Intent intent = new Intent(MenuLateralActivity.this, CreateColumnActivity.class);
+        // Se inicia la actividad CreateColumnActivity
+        startActivity(intent);
+    }
+
     // Accion al pulsar el boton de "compartir post"
     public void compartirPost(View v){
         // Accion de compartir

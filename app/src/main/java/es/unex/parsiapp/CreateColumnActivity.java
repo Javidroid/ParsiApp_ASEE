@@ -43,10 +43,12 @@ public class CreateColumnActivity extends AppCompatActivity {
             case R.id.query_selection:
                 if (checked)
                     this.radioButton = (RadioButton) findViewById(R.id.query_selection);
+                    System.out.println("QUERY");
                     break;
             case R.id.user_selection:
                 if (checked)
                     this.radioButton = (RadioButton) findViewById(R.id.user_selection);
+                    System.out.println("USUARIO");
                     break;
         }
     }

@@ -21,4 +21,7 @@ public interface TwitterService {
     // Llamada que obtiene un tweet en base a su ID
     @GET("https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,created_at&expansions=author_id&media.fields=url&user.fields=name,username,profile_image_url")
     Call<SingleTweet> tweetFromID(@Path("id") String id, @Header("Authorization") String authHeader);
+
+    @GET("https://api.twitter.com/2/users/by/username/{username}")
+    Call<UserData> userIDfromUsername(@Path("username") String username, @Header("Authorization") String authHeader);
 }

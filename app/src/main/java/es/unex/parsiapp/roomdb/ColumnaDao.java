@@ -19,6 +19,8 @@ public interface ColumnaDao {
     public void deleteAll();
     @Query("DELETE FROM columna WHERE idDb = :columna_id")
     public void deleteColumnaByID(long columna_id);
+    @Query("SELECT * FROM columna WHERE columnaActual = 1")
+    public Columna getColumnaActual();
     @Update
     public int update(Columna c);
 }

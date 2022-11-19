@@ -23,6 +23,7 @@ import es.unex.parsiapp.ListAdapterFolder;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentColeccionBinding;
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class ColeccionFragment extends Fragment {

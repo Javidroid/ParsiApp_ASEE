@@ -27,12 +27,15 @@ public class Columna {
     private String apiCall;
     @TypeConverters(ApiCallTypeConverter.class)
     private ApiCallType apiCallType;
+    @ColumnInfo(name="columnaActual")
+    private boolean columnaActual;
 
     public Columna(){}
 
     public Columna(String nombre, String apiCall){
         this.nombre = nombre;
         this.apiCall = apiCall;
+        this.columnaActual = false;
     }
 
     public long getIdDb() {
@@ -65,5 +68,13 @@ public class Columna {
 
     public void setApiCallType(ApiCallType apiCallType) {
         this.apiCallType = apiCallType;
+    }
+
+    public boolean isColumnaActual() {
+        return columnaActual;
+    }
+
+    public void setColumnaActual(boolean columnaActual) {
+        this.columnaActual = columnaActual;
     }
 }
