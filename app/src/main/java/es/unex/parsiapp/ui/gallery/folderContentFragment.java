@@ -1,5 +1,6 @@
 package es.unex.parsiapp.ui.gallery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,9 @@ import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentFolderContentBinding;
-import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
+import es.unex.parsiapp.tweetDetailsActivity;
 import es.unex.parsiapp.twitterapi.SingleTweet;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import retrofit2.Call;
@@ -59,7 +60,6 @@ public class folderContentFragment extends Fragment {
 
     public void showTweetsFromFolder(View root){
         // Conversion a lista de Posts de los tweets recibidos
-        Carpeta carpeta = (Carpeta) getActivity().getIntent().getSerializableExtra("ContenidoCarpeta");
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -81,11 +81,10 @@ public class folderContentFragment extends Fragment {
                             // Conversion a lista de Posts de los tweets recibidos
                             listposts.add(tweet.toPost());
 
-                            //TODO hacer lista de post de una carpeta y referenciarla a un fragment
                             ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener(){
                                 @Override
                                 public void onItemClick(Post item) {
-                                    detailPostFromFolder(item);
+                                    detailPostFromFolder(item, root);
                                 }
                             });
                             AppExecutors.getInstance().mainThread().execute(new Runnable() {
@@ -115,7 +114,9 @@ public class folderContentFragment extends Fragment {
         binding = null;
     }
 
-    public void detailPostFromFolder(Post item){
-
+    public void detailPostFromFolder(Post item, View root){
+        Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
+        intent.putExtra("Post", item);
+        startActivity(intent);
     }
 }

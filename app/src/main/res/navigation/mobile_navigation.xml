@@ -21,7 +21,7 @@
         android:id="@+id/nav_gallery"
         android:name="es.unex.parsiapp.ui.gallery.ColeccionFragment"
         android:label="@string/menu_coleccion"
-        tools:layout="@layout/fragment_coleccion" />
+        tools:layout="@layout/folders_activity" />
 
     <fragment
         android:id="@+id/nav_settings"

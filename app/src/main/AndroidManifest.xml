@@ -15,6 +15,13 @@
         android:theme="@style/Theme.ParsiApp"
         tools:targetApi="31">
         <activity
+            android:name=".foldersActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".CreateColumnActivity"
             android:exported="false">
             <meta-data

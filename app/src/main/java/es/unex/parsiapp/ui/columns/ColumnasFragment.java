@@ -1,26 +1,21 @@
 package es.unex.parsiapp.ui.columns;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterColumna;
-import es.unex.parsiapp.ListAdapterFolder;
-import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
-import es.unex.parsiapp.databinding.FragmentColeccionBinding;
 import es.unex.parsiapp.databinding.FragmentColumnasBinding;
-import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
