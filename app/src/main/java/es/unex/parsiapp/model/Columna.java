@@ -1,65 +1,69 @@
 package es.unex.parsiapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unex.parsiapp.roomdb.ApiCallTypeConverter;
+
+@Entity(tableName="columna")
 public class Columna {
-    private int id;
+
+    // El usuario puede elegir entre ver los resultados de una busqueda o de un usuario
+    public enum ApiCallType {
+      QUERY, USER
+    };
+
+    @PrimaryKey(autoGenerate = true)
+    private int idDb;
+    @ColumnInfo(name="nombre")
     private String nombre;
-    private List<Filtro> listaFiltros;
-    private List<Post> listaPost_temporal; // Lista TEMPORAL que almacena los twits cuando se refresca
+    @ColumnInfo(name="apiCall")
+    private String apiCall;
+    @TypeConverters(ApiCallTypeConverter.class)
+    private ApiCallType apiCallType;
 
-    public Columna(String nombre) {
+    public Columna(){}
+
+    public Columna(String nombre, String apiCall){
         this.nombre = nombre;
-        listaFiltros = new ArrayList<>();
-        listaPost_temporal = new ArrayList<>();
+        this.apiCall = apiCall;
     }
 
-    /**
-     * Método que, al ser llamado, hace una consulta a la API para actualizar los Posts que aparecen
-     * en dicha columna. Esta actualización se lleva a cabo pasando los Twits recogidos por la API
-     * por todos los filtros que haya almacenados en listaFiltros
-     * @return Lista de posts que han pasado los filtros
-     */
-    public List<Post> refrescarColumna(){
-        return null;
+    public int getIdDb() {
+        return idDb;
     }
 
-    private void llamadaAPIPosts(){
-
+    public void setIdDb(int idDb) {
+        this.idDb = idDb;
     }
 
-    /**
-     * Método que añade el filtro pasado por parámetro a la lista
-     * @param f El filtro que se quiere añadir
-     */
-    public void anadirFiltro(Filtro f){
-        listaFiltros.add(f);
+    public String getNombre() {
+        return nombre;
     }
 
-    /**
-     * Método que elimina el filtro pasado por parámetro
-     * @param f El filtro que se quiere eliminar
-     */
-    public void quitarFiltro(Filtro f){
-        listaFiltros.remove(f);
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    /**
-     * Método que elimina el filtro cuyo indice se pase por parámetro
-     * @param index El índice del filtro en la listaFiltros
-     */
-    public void quitarFiltro(int index){
-        listaFiltros.remove(index);
+    public String getApiCall() {
+        return apiCall;
     }
 
-    /**
-     * Método que devuelve la lista de posts. Su utilidad puede ser recogerlos para representarlos
-     * en la pantalla
-     * @return Devuelve listaPost_temporal, la lista que contiene los posts de la última
-     * actualización
-     */
-    public List<Post> getListaPosts(){
-        return listaPost_temporal;
+    public void setApiCall(String apiCall) {
+        this.apiCall = apiCall;
+    }
+
+    public ApiCallType getApiCallType() {
+        return apiCallType;
+    }
+
+    public void setApiCallType(ApiCallType apiCallType) {
+        this.apiCallType = apiCallType;
     }
 }
