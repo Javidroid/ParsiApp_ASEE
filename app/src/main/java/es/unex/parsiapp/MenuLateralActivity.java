@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -55,7 +57,7 @@ public class MenuLateralActivity extends AppCompatActivity{
         NavigationView navigationView = binding.navView;
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_settings)
+                R.id.nav_home, R.id.nav_settings)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -157,5 +159,16 @@ public class MenuLateralActivity extends AppCompatActivity{
                 });
             }
         });
+    }
+
+    public void nightmode(View v) {
+
+        Switch swi = findViewById(R.id.switchNightmode);
+        if(swi.isChecked()) {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 }
