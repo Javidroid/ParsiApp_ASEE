@@ -28,7 +28,8 @@
     <string name="idEdit">1</string>
     <string name="idFolder">2</string>
     <string name="idDelete">1</string>
-    <string name="nightmode">Aplicar tema oscuro</string>
+    <string name="nightmode">Seleccione el tema de la aplicación</string>
+    <string name="max_posts" >Seleccione la cantidad de posts a mostrar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Preference Titles -->
