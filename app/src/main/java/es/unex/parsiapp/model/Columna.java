@@ -20,7 +20,7 @@ public class Columna {
     };
 
     @PrimaryKey(autoGenerate = true)
-    private int idDb;
+    private long idDb;
     @ColumnInfo(name="nombre")
     private String nombre;
     @ColumnInfo(name="apiCall")
@@ -35,11 +35,11 @@ public class Columna {
         this.apiCall = apiCall;
     }
 
-    public int getIdDb() {
+    public long getIdDb() {
         return idDb;
     }
 
-    public void setIdDb(int idDb) {
+    public void setIdDb(long idDb) {
         this.idDb = idDb;
     }
 

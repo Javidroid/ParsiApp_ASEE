@@ -47,7 +47,7 @@
         app:layout_constraintVertical_bias="0.591" />
 
     <RadioGroup
-        android:id="@+id/ApiCallTypeSelection"
+        android:id="@+id/api_call_type_selection"
         android:layout_width="135dp"
         android:layout_height="184dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,13 +58,14 @@
         app:layout_constraintVertical_bias="0.499">
 
         <RadioButton
-            android:id="@+id/querySelection"
+            android:id="@+id/query_selection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Búsqueda" />
 
         <RadioButton
-            android:id="@+id/userSelection"
+            android:id="@+id/user_selection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Usuario" />
