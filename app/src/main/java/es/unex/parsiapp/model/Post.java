@@ -6,11 +6,11 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
 
 @Entity(tableName="post")
-public class Post {
+public class Post implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private long idDb; // ID de la BD

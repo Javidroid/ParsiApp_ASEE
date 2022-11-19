@@ -16,7 +16,6 @@ import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterPost;
-import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentFolderContentBinding;
 import es.unex.parsiapp.model.Carpeta;
@@ -82,19 +81,29 @@ public class folderContentFragment extends Fragment {
                             // Conversion a lista de Posts de los tweets recibidos
                             listposts.add(tweet.toPost());
 
-                            ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
-                            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-
-                            recyclerView.setHasFixedSize(true);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-                            recyclerView.setAdapter(listAdapter);
-                        }
+                            //TODO hacer lista de post de una carpeta y referenciarla a un fragment
+                            ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener(){
+                                @Override
+                                public void onItemClick(Post item) {
+                                    detailPostFromFolder(item);
+                                }
+                            });
+                            AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+                                    recyclerView.setHasFixedSize(true);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+                                    recyclerView.setAdapter(listAdapter);
+                                }
+                            });
+                        };
 
                         @Override
                         public void onFailure(Call<SingleTweet> call, Throwable t) {
                             t.printStackTrace();
                         }
-                    });
+                        });
                 }
             }
         });
@@ -104,5 +113,9 @@ public class folderContentFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void detailPostFromFolder(Post item){
+
     }
 }

@@ -1,5 +1,6 @@
 package es.unex.parsiapp.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +13,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.parsiapp.ListAdapterPost;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Post;
-import es.unex.parsiapp.twitterapi.SingleTweet;
+import es.unex.parsiapp.tweetDetailsActivity;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import retrofit2.Call;
@@ -80,7 +80,12 @@ public class HomeFragment extends Fragment {
                 listposts = tweetResults.toPostList();
 
                 // Actualizar vista
-                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext());
+                ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Post item) {
+                        showPost(item, root);
+                    }
+                });
                 RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -105,5 +110,11 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+    public void showPost(Post item, View root){
+        Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
+        intent.putExtra("Post", item);
+        startActivity(intent);
+
+    }
 
 }
