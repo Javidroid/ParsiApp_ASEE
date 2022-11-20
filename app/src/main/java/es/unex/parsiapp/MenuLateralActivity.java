@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -185,5 +186,27 @@ public class MenuLateralActivity extends AppCompatActivity{
         else {
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+    }
+
+    // Accion al pulsar boton de "crear carpeta"
+    public void onCreateFolderButton(View v){
+        Intent intent = new Intent(MenuLateralActivity.this, CreateFolderActivity.class);
+        // Se inicia la actividad CreateFolderActivity
+        startActivity(intent);
+    }
+
+    // Accion al pulsar el boton de "editar carpeta"
+    public void onEditFolderButton(View v){
+        // Obtencion del nombre e ID de carpeta
+        Button b = (Button) v;
+        String folderName = (String) b.getTag(R.string.idEdit);
+        long idFolder = (long) b.getTag(R.string.idFolder);
+
+        // Se pasan el nombre e ID de la carpeta como Extras en el Intent
+        Intent intent = new Intent(MenuLateralActivity.this, EditFolderActivity.class);
+        intent.putExtra("foldername", folderName);
+        intent.putExtra("idfolder", idFolder);
+        // Se inicia la actividad EditFolderActivity
+        startActivity(intent);
     }
 }

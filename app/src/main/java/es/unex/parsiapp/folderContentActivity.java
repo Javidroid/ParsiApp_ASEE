@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,10 @@ public class folderContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_folder_content);
 
+        showContentFolder();
+    }
+
+    public void showContentFolder(){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -64,7 +69,9 @@ public class folderContentActivity extends AppCompatActivity {
                             System.out.println(response.errorBody());
                             SingleTweet tweet = response.body();
                             // Conversion a lista de Posts de los tweets recibidos
-                            listposts.add(tweet.toPost());
+                            Post post = tweet.toPost();
+                            post.setIdDb(p.getIdDb());
+                            listposts.add(post);
 
                             ListAdapterPost listAdapter = new ListAdapterPost(listposts, folderContentActivity.this, new ListAdapterPost.OnItemClickListener(){
                                 @Override
@@ -131,15 +138,15 @@ public class folderContentActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Obtencion del ID del post
                         ImageButton imgButton = (ImageButton) v;
-                        String post_id = (String) imgButton.getTag(R.string.idSave);
-                        // Delete post from folder
-                        Post p = new Post(post_id, idFolder);
+                        long post_id = (long) imgButton.getTag(R.string.idSaveDb);
                         AppExecutors.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
-                                database.getPostDao().insert(p);
+                                database.getPostDao().delete(post_id);
                             }
                         });
+                        Toast.makeText(folderContentActivity.this, "Se ha borrado con éxito.", Toast.LENGTH_SHORT).show();
+                        showContentFolder();
                     }
                 }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
@@ -158,26 +165,4 @@ public class folderContentActivity extends AppCompatActivity {
             }
         });
     }
-
-   /* // Accion al pulsar boton de "crear carpeta"
-    public void onCreateFolderButton(View v){
-        Intent intent = new Intent(folderContentActivity.this, CreateFolderActivity.class);
-        // Se inicia la actividad CreateFolderActivity
-        startActivity(intent);
-    }
-
-    // Accion al pulsar el boton de "editar carpeta"
-    public void onEditFolderButton(View v){
-        // Obtencion del nombre e ID de carpeta
-        Button b = (Button) v;
-        String folderName = (String) b.getTag(R.string.idEdit);
-        long idFolder = (long) b.getTag(R.string.idFolder);
-
-        // Se pasan el nombre e ID de la carpeta como Extras en el Intent
-        Intent intent = new Intent(folderContentActivity.this, EditFolderActivity.class);
-        intent.putExtra("foldername", folderName);
-        intent.putExtra("idfolder", idFolder);
-        // Se inicia la actividad EditFolderActivity
-        startActivity(intent);
-    }*/
 }

@@ -89,6 +89,7 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
             // Establece el ID del post en los botones de share y save
             share.setTag(R.string.idShare, item.getId());
             save.setTag(R.string.idSave, item.getId());
+            save.setTag(R.string.idSaveDb, item.getIdDb());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

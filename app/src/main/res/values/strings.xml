@@ -25,6 +25,7 @@
     <string name="editarCarpeta">Editar</string>
     <string name="borrarCarpeta">Borrar</string>
     <string name="idSave">1</string>
+    <string name="idSaveDb">2</string>
     <string name="idShare">1</string>
     <string name="idEdit">1</string>
     <string name="idFolder">2</string>
