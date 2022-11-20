@@ -57,7 +57,7 @@ public class MenuLateralActivity extends AppCompatActivity{
         NavigationView navigationView = binding.navView;
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_settings)
+                R.id.nav_home, R.id.nav_settings, R.id.nav_columnas, R.id.nav_gallery)
                 .setOpenableLayout(drawer)
                 .build();
 

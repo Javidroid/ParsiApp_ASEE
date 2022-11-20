@@ -21,14 +21,18 @@
 
     <string-array name="max_posts_name">
         <item>10 posts</item>
-        <item>20 posts</item>
-        <item>30 posts</item>
+        <item>25 posts</item>
+        <item>50 posts</item>
+        <item>75 posts</item>
+        <item>100 posts</item>
     </string-array>
 
     <string-array name="max_posts_values">
         <item>10</item>
-        <item>20</item>
-        <item>30</item>
+        <item>25</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
     </string-array>
 
     <string-array name="folders">
