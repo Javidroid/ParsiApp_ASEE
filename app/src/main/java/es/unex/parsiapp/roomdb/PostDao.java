@@ -17,6 +17,8 @@ public interface PostDao {
     public long insert(Post p);
     @Query("DELETE FROM post")
     public void deleteAll();
+    @Query("DELETE FROM post WHERE idDb = :id_post")
+    public void delete(long id_post);
     @Update
     public int update(Post p);
 }
