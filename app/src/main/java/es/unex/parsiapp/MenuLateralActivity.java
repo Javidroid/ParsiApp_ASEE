@@ -91,6 +91,21 @@ public class MenuLateralActivity extends AppCompatActivity{
     // Accion al pulsar el boton de "crear columna"
     public void onCreateColumnButton(View v){
         Intent intent = new Intent(MenuLateralActivity.this, CreateColumnActivity.class);
+        // Se agrega el extra "create". Si es true, la columna se crea. Si es false, la columna se edita.
+        intent.putExtra("create", true);
+        // Se inicia la actividad CreateColumnActivity
+        startActivity(intent);
+    }
+
+    // Accion al pulsar el boton de "editar columna"
+    public void onEditColumnButton(View v){
+        long id_columna = (long) v.getTag(R.string.idEdit);
+
+        Intent intent = new Intent(MenuLateralActivity.this, CreateColumnActivity.class);
+        // Se agrega el extra "create". Si es true, la columna se crea. Si es false, la columna se edita.
+        intent.putExtra("create", false);
+        // Se agrega el extra "idcolumna" para saber que columna se esta editando
+        intent.putExtra("idcolumna", id_columna);
         // Se inicia la actividad CreateColumnActivity
         startActivity(intent);
     }

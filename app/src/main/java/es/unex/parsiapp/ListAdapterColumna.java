@@ -67,9 +67,8 @@ public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.
 
             nombre.setText(item.getNombre());
 
-            // Establece el nombre y ID de la columna en el boton de editar
-            bEdit.setTag(R.string.idEdit, item.getNombre());
-            bEdit.setTag(R.string.idFolder, item.getIdDb());
+            // Establece el ID de la columna en el boton de editar
+            bEdit.setTag(R.string.idEdit, item.getIdDb());
 
             // Establece el ID de la columna en el boton de borrar
             bRemove.setTag(R.string.idDelete, item.getIdDb());
