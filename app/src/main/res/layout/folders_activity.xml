@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.gallery.ColeccionFragment"
     android:id="@+id/folderContainer">
 
     <Button
@@ -13,16 +12,18 @@
         android:layout_width="59dp"
         android:layout_height="59dp"
         android:background="@drawable/rounded_corner"
-        android:onClick="onCreateFolderButton"
-        android:text="+"
-        android:textSize="33dp"
         android:includeFontPadding="false"
+        android:onClick="onCreateFolderButton"
+        android:text="@string/addFolder"
+        android:textColor="#FFFFFF"
+        android:textSize="33sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.949"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.929" />
+        app:layout_constraintVertical_bias="0.929"
+        tools:ignore="UsingOnClickInXml" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRecyclerView"

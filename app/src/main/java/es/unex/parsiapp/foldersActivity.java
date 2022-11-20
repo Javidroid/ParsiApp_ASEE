@@ -115,7 +115,6 @@ public class foldersActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
-        System.out.println(bandera+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         if (keyCode == event.KEYCODE_BACK && this.getClass() == foldersActivity.class && bandera) {
             Intent intent = new Intent(this, MenuLateralActivity.class);
             startActivity(intent);
