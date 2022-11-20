@@ -131,6 +131,8 @@ public class HomeFragment extends Fragment {
     }
 
     public void tweetsFromUser(TwitterService twitterService, String query, View root){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String max_posts = sharedPreferences.getString("max_posts", "20");
         final String[] userId = {null};
 
         twitterService.userIDfromUsername(query, "Bearer " + bearerTokenApi).enqueue(new Callback<UserData>() {
@@ -141,7 +143,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "No se ha encontrado el usuario especificado en la columna", Toast.LENGTH_SHORT).show();
                 } else {
                     userId[0] = udata.getData().getId();
-                    twitterService.tweetsFromUser(userId[0], "Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
+                    twitterService.tweetsFromUser(userId[0], max_posts, "Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
                         @Override
                         public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
                             onResponseTweets(response, root);

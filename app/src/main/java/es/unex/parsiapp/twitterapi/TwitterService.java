@@ -15,8 +15,8 @@ public interface TwitterService {
     Call<TweetResults> tweetsFromQuery(@Query("query") String query, @Query("max_results") String max_posts, @Header("Authorization") String authHeader);
 
     // Llamada que obtiene los tweets recientes de un determinado usuario (la String user es el ID de Twitter de dicho usuario)
-    @GET("https://api.twitter.com/2/users/{user}/tweets?tweet.fields=author_id,created_at&expansions=author_id&media.fields=url&user.fields=name,username,profile_image_url&max_results=" + MAX_RESULTS)
-    Call<TweetResults> tweetsFromUser(@Path("user") String user, @Header("Authorization") String authHeader);
+    @GET("https://api.twitter.com/2/users/{user}/tweets?tweet.fields=author_id,created_at&expansions=author_id&media.fields=url&user.fields=name,username,profile_image_url")
+    Call<TweetResults> tweetsFromUser(@Path("user") String user, @Query("max_results") String max_posts, @Header("Authorization") String authHeader);
 
     // Llamada que obtiene un tweet en base a su ID
     @GET("https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,created_at&expansions=author_id&media.fields=url&user.fields=name,username,profile_image_url")
