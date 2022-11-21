@@ -18,10 +18,6 @@
             app:icon="@drawable/ic_baseline_language_24"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
-            app:key="nightmode"
-            app:title="@string/nightmode"
-            app:icon="@drawable/ic_baseline_dark_mode_24" />
 
         <SwitchPreferenceCompat
             app:key="notifications"
@@ -30,7 +26,7 @@
             app:defaultValue="true"/>
 
         <ListPreference
-            app:defaultValue="20"
+            app:defaultValue="25"
             app:entries="@array/max_posts_name"
             app:entryValues="@array/max_posts_values"
             app:key="max_posts"
