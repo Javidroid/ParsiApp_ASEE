@@ -10,7 +10,7 @@ import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 
-@Database(entities={Carpeta.class, Post.class, Columna.class}, version=13)
+@Database(entities={Carpeta.class, Post.class, Columna.class}, version=14)
 public abstract class ParsiDatabase extends RoomDatabase {
     private static ParsiDatabase instance;
 

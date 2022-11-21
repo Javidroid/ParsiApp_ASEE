@@ -19,6 +19,8 @@ public interface PostDao {
     public void deleteAll();
     @Query("DELETE FROM post WHERE idDb = :id_post")
     public void delete(long id_post);
+    @Query("DELETE FROM post WHERE carpetaid = :carpeta_id")
+    public void deleteAllPostsFromCarpeta(long carpeta_id);
     @Update
     public int update(Post p);
 }

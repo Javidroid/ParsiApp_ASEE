@@ -209,4 +209,29 @@ public class MenuLateralActivity extends AppCompatActivity{
         // Se inicia la actividad EditFolderActivity
         startActivity(intent);
     }
+
+    public void onDeleteButton(View v){
+        String deletedElement = null;
+
+        // Obtencion del nombre e ID de la carpeta/columna
+        Button b = (Button) v;
+        long id = (long) b.getTag(R.string.idDelete);
+
+        switch(v.getId())
+        {
+            case R.id.deleteFolder:
+                deletedElement = "Folder";
+            break;
+            case R.id.deleteColumn:
+                deletedElement = "Column";
+            break;
+        }
+        // Se pasan el ID y el elemento a borrar como Extras en el Intent
+        Intent intent = new Intent(MenuLateralActivity.this, DeleteActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("deletedElement", deletedElement);
+
+        // Se inicia la actividad DeleteActivity
+        startActivity(intent);
+    }
 }
