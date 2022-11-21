@@ -31,13 +31,13 @@ public class CreateColumnActivity extends AppCompatActivity {
         // Se obtiene el boton radio actualmente seleccionado
         this.radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
 
-        /* Si createFolder es true, se creara una nueva carpeta. Si es false se editara una columna
+        /* Si createColumn es true, se creara una nueva columna. Si es false se editara una columna
             ya existente y se cargaran los datos de esta en la IU */
-        boolean createFolder = true;
-        createFolder = getIntent().getBooleanExtra("create", createFolder);
+        boolean createColumn = true;
+        createColumn = getIntent().getBooleanExtra("create", createColumn);
 
         // Si se esta editando una columna, se prepara la IU para cargar los datos
-        if (!createFolder){
+        if (!createColumn){
             long id_columna = 1;
             id_columna = getIntent().getLongExtra("idcolumna", id_columna);
             setForEditColumn(id_columna);
