@@ -14,7 +14,7 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/nav_columnas"
-                    android:icon="@drawable/ic_baseline_push_pin_24"
+                    android:icon="@drawable/columna"
                     android:title="@string/menu_columnas"
                     />
             </group>
@@ -25,7 +25,7 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/nav_gallery"
-                    android:icon="@drawable/ic_baseline_save_alt_24"
+                    android:icon="@drawable/carpeta"
                     android:title="@string/menu_posts_guardados"
                     />
             </group>
