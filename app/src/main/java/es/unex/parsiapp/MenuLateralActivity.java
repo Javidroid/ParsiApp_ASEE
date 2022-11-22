@@ -187,27 +187,32 @@ public class MenuLateralActivity extends AppCompatActivity{
                 b = (ImageButton) v;
                 AlertDialog.Builder popupFolders = new AlertDialog.Builder(MenuLateralActivity.this);
 
-                popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
-                        Toast.makeText(MenuLateralActivity.this, data, Toast.LENGTH_SHORT).show();
-                        folder_id[0] = folders.get(which).getIdDb();
+                if(folders.size()>0){
+                    popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
+                            Toast.makeText(MenuLateralActivity.this, data, Toast.LENGTH_SHORT).show();
+                            folder_id[0] = folders.get(which).getIdDb();
 
 
-                        // Obtencion del ID del post
-                        ImageButton imgButton = (ImageButton) v;
-                        String post_id = (String) imgButton.getTag(R.string.idSave);
-                        // Insertar post
-                        Post p = new Post(post_id, folder_id[0]);
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                database.getPostDao().insert(p);
-                            }
-                        });
-                    }
-                });
+                            // Obtencion del ID del post
+                            ImageButton imgButton = (ImageButton) v;
+                            String post_id = (String) imgButton.getTag(R.string.idSave);
+                            // Insertar post
+                            Post p = new Post(post_id, folder_id[0]);
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    database.getPostDao().insert(p);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    popupFolders.setTitle("Crea una carpeta carpeta");
+                }
+
 
                 AppExecutors.getInstance().mainThread().execute(new Runnable() {
                     @Override

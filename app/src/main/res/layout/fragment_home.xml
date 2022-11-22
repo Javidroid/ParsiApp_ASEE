@@ -20,22 +20,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <Button
-        android:id="@+id/refresh_button"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="59dp"
-        android:layout_height="59dp"
-        android:background="@drawable/rounded_corner"
-        android:drawableTop="@drawable/ic_baseline_autorenew_24"
-        android:paddingTop="11dp"
-        android:includeFontPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.929" />
+        <TextView
+            android:id="@+id/addColumn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/addColunm"
+            android:gravity="center|center_vertical"
+            android:textSize="24sp"
+            android:visibility="visible"
+            android:inputType="text"
+            tools:ignore="MissingConstraints,TextViewEdits">
+        </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

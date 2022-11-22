@@ -7,6 +7,8 @@
             app:key="username"
             app:title="@string/username"
             app:icon="@drawable/ic_baseline_manage_accounts_24"
+            app:negativeButtonText="cancelar"
+            app:positiveButtonText="aceptar"
             app:useSimpleSummaryProvider="true"/>
 
         <ListPreference
@@ -14,6 +16,7 @@
             app:entries="@array/nombre_idiomas"
             app:entryValues="@array/valor_idiomas"
             app:key="idiomas"
+            app:negativeButtonText="cancelar"
             app:title="@string/idioma"
             app:icon="@drawable/ic_baseline_language_24"
             app:useSimpleSummaryProvider="true" />
@@ -29,6 +32,7 @@
             app:defaultValue="25"
             app:entries="@array/max_posts_name"
             app:entryValues="@array/max_posts_values"
+            app:negativeButtonText="cancelar"
             app:key="max_posts"
             app:title="@string/max_posts"
             app:useSimpleSummaryProvider="true" />
@@ -39,11 +43,19 @@
 
         <Preference
             app:title="Hacer una pregunta"
-            app:icon="@drawable/ic_baseline_question_mark_24" />
+            app:icon="@drawable/ic_baseline_question_mark_24" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://help.twitter.com/es/forms/privacy/question" />
+        </Preference>
 
         <Preference
             app:title="Preguntas frecuentes"
-            app:icon="@drawable/ic_baseline_question_answer_24" />
+            app:icon="@drawable/ic_baseline_question_answer_24" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://help.twitter.com/es/resources/new-user-faq" />
+        </Preference>
 
         <Preference
             app:title="Política de privacidad"

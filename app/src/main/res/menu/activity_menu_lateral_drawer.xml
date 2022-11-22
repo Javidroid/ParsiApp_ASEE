@@ -21,7 +21,7 @@
             </group>
         </menu>
     </item>
-    <item android:title="@string/menu_coleccion">
+    <item android:title="@string/menu_posts_guardados">
         <menu>
             <group android:checkableBehavior="single">
                 <item

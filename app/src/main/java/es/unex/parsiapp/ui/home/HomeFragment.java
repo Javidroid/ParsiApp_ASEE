@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,7 +21,6 @@ import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterPost;
-import es.unex.parsiapp.MenuLateralActivity;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Columna;
@@ -32,7 +29,6 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.tweetDetailsActivity;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
-import es.unex.parsiapp.twitterapi.User;
 import es.unex.parsiapp.twitterapi.UserData;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,15 +60,6 @@ public class HomeFragment extends Fragment {
 
         // Mostrar tweets
         showTweetsFromColumna(root);
-
-        // Boton de Refresh
-//        Button b = (Button) root.findViewById(R.id.refresh_button);
-//        b.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showTweetsFromColumna(root);
-//            }
-//        });
 
         refresh = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
 
@@ -112,6 +99,8 @@ public class HomeFragment extends Fragment {
                     } else if (c.getApiCallType() == Columna.ApiCallType.USER){
                         tweetsFromUser(twitterService, query, root);
                     }
+                    TextView t = (TextView) root.findViewById(R.id.addColumn);
+                    t.setVisibility(View.INVISIBLE);
                 }
             }
         });

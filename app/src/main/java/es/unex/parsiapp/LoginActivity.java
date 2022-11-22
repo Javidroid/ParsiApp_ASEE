@@ -1,17 +1,14 @@
 package es.unex.parsiapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import es.unex.parsiapp.model.Carpeta;
-import es.unex.parsiapp.model.Columna;
+import androidx.appcompat.app.AppCompatActivity;
+
 import es.unex.parsiapp.model.Usuario;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
