@@ -32,20 +32,27 @@
             </group>
         </menu>
     </item>
-    <item android:title="Más opciones">
+    <item android:title="@string/m_s_opciones">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/app_bar_switch"
-                    android:title="Modo oscuro"
+                    android:title="@string/modo_oscuro"
                     android:icon="@drawable/ic_baseline_dark_mode_24"
                     app:actionLayout="@layout/switch_item"
                     app:showAsAction="always" />
                 <item
                     android:id="@+id/nav_settings"
-                    android:title="Configuración"
+                    android:title="@string/configuraci_n"
                     android:icon="@drawable/ic_baseline_settings_24"/>
             </group>
         </menu>
     </item>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/logout"
+            android:title="@string/cerrar_sesi_n"
+            android:icon="@drawable/logout"/>
+    </group>
 </menu>

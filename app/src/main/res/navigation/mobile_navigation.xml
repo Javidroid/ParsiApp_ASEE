@@ -28,4 +28,9 @@
         android:name="es.unex.parsiapp.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+    <activity
+        android:id="@+id/nav_logOut"
+        android:name="es.unex.parsiapp.LoginActivity"
+        android:label="@string/cerrar_sesi_n"
+        tools:layout="@layout/activity_login" />
 </navigation>

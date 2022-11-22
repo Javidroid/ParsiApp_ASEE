@@ -42,7 +42,6 @@ public class FolderFragment extends Fragment {
         root = binding.getRoot();
 
         showFolders(root);
-
         return root;
     }
 
