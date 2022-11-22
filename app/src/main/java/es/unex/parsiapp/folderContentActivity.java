@@ -73,7 +73,7 @@ public class folderContentActivity extends AppCompatActivity {
                             post.setIdDb(p.getIdDb());
                             listposts.add(post);
 
-                            ListAdapterPost listAdapter = new ListAdapterPost(listposts, folderContentActivity.this, new ListAdapterPost.OnItemClickListener(){
+                            ListAdapterPostSaved listAdapter = new ListAdapterPostSaved(listposts, folderContentActivity.this, new ListAdapterPostSaved.OnItemClickListener(){
                                 @Override
                                 public void onItemClick(Post item) {
                                     detailPostFromFolder(item);

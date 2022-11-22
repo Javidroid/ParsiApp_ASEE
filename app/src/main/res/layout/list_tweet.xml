@@ -155,7 +155,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:contentDescription="@string/guardartweet"
-                        android:background="@drawable/ic_baseline_save_alt_24"
+                        android:background="@drawable/not_saved"
                         android:layout_marginStart="5dp"
                         android:scaleType="centerCrop"
                         android:onClick="addPostToCarpeta"
