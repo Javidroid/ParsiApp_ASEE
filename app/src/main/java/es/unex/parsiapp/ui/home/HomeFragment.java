@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.List;
 
@@ -50,6 +51,8 @@ public class HomeFragment extends Fragment {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
+    private SwipeRefreshLayout refresh;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -63,11 +66,24 @@ public class HomeFragment extends Fragment {
         showTweetsFromColumna(root);
 
         // Boton de Refresh
-        Button b = (Button) root.findViewById(R.id.refresh_button);
-        b.setOnClickListener(new View.OnClickListener() {
+//        Button b = (Button) root.findViewById(R.id.refresh_button);
+//        b.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showTweetsFromColumna(root);
+//            }
+//        });
+
+        refresh = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
+
+        refresh.setColorSchemeResources(R.color.white);
+        refresh.setProgressBackgroundColorSchemeResource(R.color.blueParsi);
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
+            public void onRefresh() {
                 showTweetsFromColumna(root);
+                refresh.setRefreshing(false);
             }
         });
 
@@ -185,5 +201,4 @@ public class HomeFragment extends Fragment {
             System.out.println("No se han encontrado tweets");
         }
     }
-
 }
