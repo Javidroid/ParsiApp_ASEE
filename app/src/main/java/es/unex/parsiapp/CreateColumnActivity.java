@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
@@ -44,11 +45,7 @@ public class CreateColumnActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        ParsiDatabase.getInstance(this).close();
-        super.onDestroy();
-    }
+
 
     /* Prepara la IU y la Activity para editar una columna */
     public void setForEditColumn(long id_carpeta){
@@ -135,13 +132,14 @@ public class CreateColumnActivity extends AppCompatActivity {
             // Crea o edita la carpeta correspondiente
             if(this.editedColumn != null){
                 editColumn(columnName, selectedQuery, apiCallType);
+                finish();
             } else {
                 createColumn(columnName, selectedQuery, apiCallType);
+                Toast.makeText(CreateColumnActivity.this, "Se ha establecido " + columnName + " como columna actual", Toast.LENGTH_SHORT).show();
+                Intent myIntent = new Intent(CreateColumnActivity.this, MenuLateralActivity.class);
+                // Lanzar actividad MenuLateralActivity
+                startActivity(myIntent);
             }
-
-            Intent myIntent = new Intent(CreateColumnActivity.this, MenuLateralActivity.class);
-            // Lanzar actividad MenuLateralActivity
-            startActivity(myIntent);
         }
     }
 
@@ -155,7 +153,15 @@ public class CreateColumnActivity extends AppCompatActivity {
             public void run() {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(CreateColumnActivity.this);
+
+                Columna oldC = database.getColumnaDao().getColumnaActual();
+                if(oldC != null){
+                    oldC.setColumnaActual(false);
+                    database.getColumnaDao().update(oldC);
+                }
+
                 // Insercion en BD
+                c.setColumnaActual(true);
                 long id = database.getColumnaDao().insert(c);
                 c.setIdDb(id);
             }

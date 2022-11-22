@@ -82,12 +82,6 @@ public class MenuLateralActivity extends AppCompatActivity{
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    protected void onDestroy() {
-        ParsiDatabase.getInstance(this).close();
-        super.onDestroy();
-    }
-
     /* Metodos añadidos*/
     // Accion al pulsar el boton de "crear columna"
     public void onCreateColumnButton(View v){

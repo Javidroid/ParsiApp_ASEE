@@ -32,18 +32,25 @@ public class FolderFragment extends Fragment {
         return new FolderFragment();
     }
 
+    private View root;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentFolderBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         showFolders(root);
 
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        showFolders(root);
+    }
 
     public void showFolders(View root){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {

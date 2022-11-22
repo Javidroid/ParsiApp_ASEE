@@ -74,13 +74,23 @@ public class DeleteActivity extends AppCompatActivity {
                     Columna c = database.getColumnaDao().getColumna(elementId);
                     database.getColumnaDao().deleteColumnaByID(elementId);
                     mensaje = "Se ha eliminado la columna " + c.getNombre();
+                    if(c.isColumnaActual()){
+                        try {
+                            Columna newActual = database.getColumnaDao().getAll().get(0);
+                            newActual.setColumnaActual(true);
+                            database.getColumnaDao().update(newActual);
+                            mensaje += ". Se ha establecido la columna " + newActual.getNombre() + " como columna actual";
+                        }
+                        catch (Exception e){
+
+                        }
+                    }
                 }
                 AppExecutors.getInstance().mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(DeleteActivity.this, mensaje, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DeleteActivity.this, MenuLateralActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
             }

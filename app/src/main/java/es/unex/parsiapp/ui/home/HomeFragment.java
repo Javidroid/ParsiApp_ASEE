@@ -166,20 +166,24 @@ public class HomeFragment extends Fragment {
 
     public void onResponseTweets(Response<TweetResults> response, View root){
         TweetResults tweetResults = response.body();
-        // Conversion a lista de Posts de los tweets recibidos
-        listposts = tweetResults.toPostList();
+        try {
+            // Conversion a lista de Posts de los tweets recibidos
+            listposts = tweetResults.toPostList();
 
-        // Actualizar vista
-        ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
-            @Override
-            public void onItemClick(Post item) {
-                showPost(item, root);
-            }
-        });
-        RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(listAdapter);
+            // Actualizar vista
+            ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
+                @Override
+                public void onItemClick(Post item) {
+                    showPost(item, root);
+                }
+            });
+            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(listAdapter);
+        } catch (Exception e){
+            System.out.println("No se han encontrado tweets");
+        }
     }
 
 }

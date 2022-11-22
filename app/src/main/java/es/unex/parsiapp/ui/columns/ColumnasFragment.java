@@ -25,17 +25,24 @@ public class ColumnasFragment extends Fragment {
 
     private List<Columna> listColumna;
     private FragmentColumnasBinding binding;
+    private View root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentColumnasBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         showColumnas(root);
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showColumnas(root);
     }
 
     @Override
@@ -52,10 +59,6 @@ public class ColumnasFragment extends Fragment {
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
 
                 listColumna = database.getColumnaDao().getAll();
-                Columna columna = database.getColumnaDao().getColumnaActual();
-                for(Columna c : listColumna){
-                    System.out.println("----------------------> " + c.getNombre());
-                }
 
                 if(listColumna != null) {
                     ListAdapterColumna listAdapter = new ListAdapterColumna(listColumna, root.getContext(), new ListAdapterColumna.OnItemClickListener() {

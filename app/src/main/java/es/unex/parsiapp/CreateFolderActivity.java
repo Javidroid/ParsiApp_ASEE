@@ -35,12 +35,6 @@ public class CreateFolderActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        ParsiDatabase.getInstance(this).close();
-        super.onDestroy();
-    }
-
     public void setForEditFolder(long id_folder){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -75,9 +69,7 @@ public class CreateFolderActivity extends AppCompatActivity {
             } else {
                 createFolder(folderName);
             }
-            Intent myIntent = new Intent(CreateFolderActivity.this, MenuLateralActivity.class);
-            // Lanzar actividad MenuLateralActivity
-            startActivity(myIntent);
+            finish();
         }
     }
 
