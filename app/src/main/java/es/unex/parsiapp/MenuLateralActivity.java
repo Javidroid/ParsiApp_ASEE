@@ -210,7 +210,20 @@ public class MenuLateralActivity extends AppCompatActivity{
                         }
                     });
                 }else{
-                    popupFolders.setTitle("Crea una carpeta carpeta");
+                    popupFolders.setTitle("Crea una nueva carpeta")
+                                .setPositiveButton("CREAR CARPETA", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(MenuLateralActivity.this, CreateFolderActivity.class);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
                 }
 
 
