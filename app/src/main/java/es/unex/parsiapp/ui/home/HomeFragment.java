@@ -115,6 +115,7 @@ public class HomeFragment extends Fragment {
     public void showPost(Post item, View root){
         Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
         intent.putExtra("Post", item);
+        intent.putExtra("Saved", 0);
         startActivity(intent);
     }
 

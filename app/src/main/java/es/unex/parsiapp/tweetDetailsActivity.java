@@ -30,6 +30,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_tweet);
 
         Post item = (Post) getIntent().getSerializableExtra("Post");
+        int sa = (int) getIntent().getSerializableExtra("Saved");
         userImage = findViewById(R.id.iconImageViewDetailTweet);
         nombre = findViewById(R.id.nameViewDetailTweet);
         userName = findViewById(R.id.userNameViewDetailTweet);
@@ -50,6 +51,9 @@ public class tweetDetailsActivity extends AppCompatActivity {
         tweetID.setText(item.getId());
         // Establece el ID del post en los botones de share y save
         share.setTag(R.string.idShare, item.getId());
+        if(sa==1){
+            save.setImageResource(R.drawable.saved);
+        }
         save.setTag(R.string.idSave, item.getId());
     }
 
