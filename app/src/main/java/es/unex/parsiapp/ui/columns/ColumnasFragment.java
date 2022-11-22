@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -23,7 +25,6 @@ public class ColumnasFragment extends Fragment {
 
     private List<Columna> listColumna;
     private FragmentColumnasBinding binding;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +52,7 @@ public class ColumnasFragment extends Fragment {
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
 
                 listColumna = database.getColumnaDao().getAll();
+                Columna columna = database.getColumnaDao().getColumnaActual();
                 for(Columna c : listColumna){
                     System.out.println("----------------------> " + c.getNombre());
                 }
@@ -61,6 +63,7 @@ public class ColumnasFragment extends Fragment {
                         public void onItemClick(Columna item) {
                             item.setColumnaActual(true);
                             updateColumnaActual(item);
+                            showColumnas(root);
                             Toast.makeText(getContext(), "Se ha cambiado la columna actual a " + item.getNombre(), Toast.LENGTH_SHORT).show();
                         }
                     });

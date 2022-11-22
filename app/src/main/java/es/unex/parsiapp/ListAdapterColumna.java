@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -72,6 +73,10 @@ public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.
 
             // Establece el ID de la columna en el boton de borrar
             bRemove.setTag(R.string.idDelete, item.getIdDb());
+            if (item.isColumnaActual()) {
+                ImageView imageView = (ImageView) itemView.findViewById(R.id.iconImageView);
+                imageView.setImageResource(R.drawable.ic_baseline_home_24);
+            }
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
