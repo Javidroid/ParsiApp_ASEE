@@ -5,7 +5,7 @@
     android:id="@+id/cdF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="2dp"
+    app:cardElevation="3dp"
     app:cardCornerRadius="15dp"
     app:cardUseCompatPadding="true">
 
@@ -50,7 +50,6 @@
                     android:maxLength="50"
                     android:maxLines="1"
                     android:text="@string/nombreColumna"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
                 <androidx.constraintlayout.widget.ConstraintLayout

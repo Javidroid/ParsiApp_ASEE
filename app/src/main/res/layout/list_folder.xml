@@ -52,7 +52,6 @@
                     android:maxLength="50"
                     android:maxLines="1"
                     android:text="@string/nombreCarpeta"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
                 <androidx.constraintlayout.widget.ConstraintLayout

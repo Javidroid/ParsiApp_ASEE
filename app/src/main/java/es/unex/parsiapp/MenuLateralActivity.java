@@ -1,5 +1,6 @@
 package es.unex.parsiapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -221,7 +222,7 @@ public class MenuLateralActivity extends AppCompatActivity{
 
     public void nightmode(View v) {
 
-        Switch swi = findViewById(R.id.switchNightmode);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch swi = findViewById(R.id.switchNightmode);
         if(swi.isChecked()) {
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }

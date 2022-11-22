@@ -56,7 +56,6 @@
                     android:maxLength="50"
                     android:maxLines="1"
                     android:text="@string/nombre"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -111,7 +110,6 @@
                     android:layout_marginBottom="4dp"
                     android:maxLength="280"
                     android:text="@string/descriptionTweet"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 

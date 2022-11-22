@@ -8,9 +8,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#b5b5b5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,10 +22,8 @@
         android:layout_width="59dp"
         android:layout_height="59dp"
         android:background="@drawable/rounded_corner"
-        android:text=""
         android:drawableTop="@drawable/ic_baseline_autorenew_24"
         android:paddingTop="11dp"
-        android:textSize="33dp"
         android:includeFontPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
