@@ -48,11 +48,4 @@
             </group>
         </menu>
     </item>
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/logout"
-            android:title="@string/cerrar_sesi_n"
-            android:icon="@drawable/logout"/>
-    </group>
 </menu>
