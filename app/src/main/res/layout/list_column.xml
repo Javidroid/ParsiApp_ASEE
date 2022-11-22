@@ -5,16 +5,13 @@
     android:id="@+id/cdF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="20dp"
-    android:layout_marginBottom="5dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="15dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,12 +22,13 @@
 
             <ImageView
                 android:id="@+id/iconImageView"
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                app:srcCompat="@drawable/ic_baseline_table_rows_24"
+                android:layout_marginTop="5dp"
+                app:srcCompat="@drawable/columna_azul"
                 />
 
             <LinearLayout
@@ -53,13 +51,13 @@
                     android:maxLines="1"
                     android:text="@string/nombreColumna"
                     android:textColor="@android:color/black"
-                    android:textSize="26sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="0.8dp"
                     android:background="#8c8c8c"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="1dp">
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,10 +66,10 @@
                     android:orientation="horizontal">
                     <Button
                         android:id="@+id/deleteColumn"
-                        android:layout_width="88dp"
-                        android:layout_height="55dp"
+                        android:layout_width="92dp"
+                        android:layout_height="40dp"
                         android:text="@string/borrarCarpeta"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:textColor="#ff6565"
                         android:textStyle="bold"
                         android:onClick="onDeleteButton"
@@ -85,10 +83,10 @@
 
                     <Button
                         android:id="@+id/editColumn"
-                        android:layout_width="88dp"
-                        android:layout_height="55dp"
+                        android:layout_width="92dp"
+                        android:layout_height="40dp"
                         android:text="@string/editarCarpeta"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:textColor="#77dd77"
                         android:textStyle="bold"
                         android:onClick="onEditColumnButton"

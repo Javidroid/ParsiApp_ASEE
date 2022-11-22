@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     app:cardElevation="2dp"
-    app:cardCornerRadius="20dp"
+    app:cardCornerRadius="15dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
