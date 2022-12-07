@@ -6,10 +6,6 @@ import org.junit.Test;
 
 public class ColumnaTest {
 
-    public enum ApiCallType {
-        QUERY, USER
-    };
-
     @Test
     public void setIdDb() {
         Columna columna = new Columna();
