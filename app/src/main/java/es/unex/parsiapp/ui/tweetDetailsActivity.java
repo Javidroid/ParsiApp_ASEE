@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,14 +16,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class tweetDetailsActivity extends AppCompatActivity {
+
     private ShapeableImageView userImage;
     private TextView nombre, userName, tweet, tweetID;
     private ImageButton share, save;
+
+    // --- Métodos de Callback ---
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,19 +63,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
         save.setTag(R.string.idSave, item.getId());
     }
 
-    public void compartirPostTweet(View v){
-        // Accion de compartir
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Poner aqui enlace del tweet");
-        intent.setType("text/plain");
-
-        Intent shareIntent = Intent.createChooser(intent, null);
-        startActivity(shareIntent);
-    }
-
     public void addPostToCarpetaTweet(View v){
-
         final long[] folder_id = {1};
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -91,22 +85,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
                 popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
-                        Toast.makeText(tweetDetailsActivity.this, data, Toast.LENGTH_SHORT).show();
-                        folder_id[0] = folders.get(which).getIdDb();
-
-
-                        // Obtencion del ID del post
-                        ImageButton imgButton = (ImageButton) v;
-                        String post_id = (String) imgButton.getTag(R.string.idSave);
-                        // Insertar post
-                        Post p = new Post(post_id, folder_id[0]);
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                database.getPostDao().insert(p);
-                            }
-                        });
+                        savePostInFolder(v, folders, which, database);
                     }
                 });
 
@@ -117,6 +96,31 @@ public class tweetDetailsActivity extends AppCompatActivity {
                         alertDialog.show();
                     }
                 });
+            }
+        });
+    }
+
+    // Guarda un post
+    public void savePostInFolder(View v, List<Carpeta> folders, int which, ParsiDatabase database){
+        String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
+        Toast.makeText(tweetDetailsActivity.this, data, Toast.LENGTH_SHORT).show();
+        long folder_id = folders.get(which).getIdDb();
+
+        // Obtencion del ID del post
+        ImageButton imgButton = (ImageButton) v;
+        long post_id = (long) imgButton.getTag(R.string.idSaveDb);
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Post pOld = database.getPostDao().getPost(post_id);
+                Post p = new Post(pOld.getId(), folder_id);
+                p.setContenido(pOld.getContenido());
+                p.setTimestamp(pOld.getTimestamp());
+                p.setAuthorUsername(pOld.getAuthorUsername());
+                p.setProfilePicture(pOld.getProfilePicture());
+                p.setAuthorId(pOld.getAuthorId());
+                database.getPostDao().insert(p);
             }
         });
     }

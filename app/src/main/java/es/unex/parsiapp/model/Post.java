@@ -102,23 +102,6 @@ public class Post implements Serializable {
         this.timestamp = timestamp;
     }
 
-    /**
-     * Método para compartir el post a otras apps mediante un Intent Implícito
-     */
-    public void compartir(){
-        // todo
-        // No sé si esto hay que hacerlo desde la parte gráfica porque basicamente es
-        // hacer un intent implícito
-    }
-
-    /**
-     * Método que tiene el propio post para guardarse en la carpeta que se indique.
-     * @param carpeta La carpeta en la que se quiere guardar el Post
-     */
-    public void guardarEnCarpeta(@NonNull Carpeta carpeta){
-        carpeta.anadirPost(this);
-    }
-
     public String toString(){
         return "POST - ID: " + this.id + " - AUTOR ID: " + this.authorId + " - USERNAME: " + this.authorUsername + " - CONTENIDO: " + this.contenido;
     }

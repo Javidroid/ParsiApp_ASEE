@@ -9,12 +9,17 @@ import es.unex.parsiapp.model.Usuario;
 
 @Dao
 public interface UsuarioDao {
+    // SELECT
     @Query("SELECT * FROM usuario WHERE idDb = :id_usuario")
     public Usuario getUsuario(long id_usuario);
     @Query("SELECT * FROM usuario WHERE username = :username_")
     public Usuario getUsuarioFromUsername(String username_);
+
+    // INSERT
     @Insert
     public long insert(Usuario user);
+
+    // UPDATE
     @Update
     public int update(Usuario user);
 }

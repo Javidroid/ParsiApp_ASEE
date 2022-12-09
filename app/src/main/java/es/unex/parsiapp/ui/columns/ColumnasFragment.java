@@ -27,6 +27,7 @@ public class ColumnasFragment extends Fragment {
     private FragmentColumnasBinding binding;
     private View root;
 
+    // --- Métodos de Callback ---
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class ColumnasFragment extends Fragment {
         binding = FragmentColumnasBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
+        // Muestra las columnas
         showColumnas(root);
 
         return root;
@@ -51,13 +53,15 @@ public class ColumnasFragment extends Fragment {
         binding = null;
     }
 
+    // --- Otros métodos ---
+
+    // Muestra y actualiza las columnas
     public void showColumnas(View root){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(getActivity());
-
                 listColumna = database.getColumnaDao().getAll();
 
                 if(listColumna != null) {
@@ -85,6 +89,7 @@ public class ColumnasFragment extends Fragment {
         });
     }
 
+    // Cambia la columna actual
     public void updateColumnaActual(Columna newC){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override

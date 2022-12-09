@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Usuario;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
@@ -16,6 +18,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private String mensaje;
     private boolean logged = false;
+
+    // --- Métodos de Callback ---
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // --- Otros métodos ---
+
+    // Inicio de sesión
     public void iniciarSesion(String username, String password){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override

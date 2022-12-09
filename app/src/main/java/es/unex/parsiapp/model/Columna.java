@@ -30,6 +30,7 @@ public class Columna {
     @ColumnInfo(name="columnaActual")
     private boolean columnaActual;
 
+    // --- Constructores ---
     public Columna(){}
 
     public Columna(String nombre, String apiCall){
@@ -38,6 +39,7 @@ public class Columna {
         this.columnaActual = false;
     }
 
+    // --- Métodos get y set ---
     public long getIdDb() {
         return idDb;
     }

@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -26,6 +26,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.ActivityMenuLateralBinding;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
@@ -37,7 +39,8 @@ public class MenuLateralActivity extends AppCompatActivity{
 
     ImageButton b;
 
-    /* Metodos de callback */
+    /* --- Metodos de callback --- */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,6 @@ public class MenuLateralActivity extends AppCompatActivity{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_menu_lateral);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
     }
 
     @Override
@@ -84,7 +86,8 @@ public class MenuLateralActivity extends AppCompatActivity{
                 || super.onSupportNavigateUp();
     }
 
-    /* Metodos añadidos*/
+    // --- Otros métodos ---
+
     // Accion al pulsar el boton de "crear columna"
     public void onCreateColumnButton(View v){
         Intent intent = new Intent(MenuLateralActivity.this, CreateColumnActivity.class);
@@ -170,8 +173,6 @@ public class MenuLateralActivity extends AppCompatActivity{
     // Accion al pulsar el boton de "guardar post"
     public void addPostToCarpeta(View v){
 
-        final long[] folder_id = {1};
-
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -192,27 +193,7 @@ public class MenuLateralActivity extends AppCompatActivity{
                     popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
-                            Toast.makeText(MenuLateralActivity.this, data, Toast.LENGTH_SHORT).show();
-                            folder_id[0] = folders.get(which).getIdDb();
-
-                            // Obtencion del ID del post
-                            ImageButton imgButton = (ImageButton) v;
-                            long post_id = (long) imgButton.getTag(R.string.idSaveDb);
-
-                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Post pOld = database.getPostDao().getPost(post_id);
-                                    Post p = new Post(pOld.getId(), folder_id[0]);
-                                    p.setContenido(pOld.getContenido());
-                                    p.setTimestamp(pOld.getTimestamp());
-                                    p.setAuthorUsername(pOld.getAuthorUsername());
-                                    p.setProfilePicture(pOld.getProfilePicture());
-                                    p.setAuthorId(pOld.getAuthorId());
-                                    database.getPostDao().insert(p);
-                                }
-                            });
+                            savePostInFolder(v, folders, which, database);
                         }
                     });
                 }else{
@@ -226,13 +207,9 @@ public class MenuLateralActivity extends AppCompatActivity{
                                 })
                                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
+                                    public void onClick(DialogInterface dialog, int which) {}
                                 });
                 }
-
-
                 AppExecutors.getInstance().mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -244,8 +221,33 @@ public class MenuLateralActivity extends AppCompatActivity{
         });
     }
 
-    public void nightmode(View v) {
+    // Guarda un post
+    public void savePostInFolder(View v, List<Carpeta> folders, int which, ParsiDatabase database){
+        String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
+        Toast.makeText(MenuLateralActivity.this, data, Toast.LENGTH_SHORT).show();
+        long folder_id = folders.get(which).getIdDb();
 
+        // Obtencion del ID del post
+        ImageButton imgButton = (ImageButton) v;
+        long post_id = (long) imgButton.getTag(R.string.idSaveDb);
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Post pOld = database.getPostDao().getPost(post_id);
+                Post p = new Post(pOld.getId(), folder_id);
+                p.setContenido(pOld.getContenido());
+                p.setTimestamp(pOld.getTimestamp());
+                p.setAuthorUsername(pOld.getAuthorUsername());
+                p.setProfilePicture(pOld.getProfilePicture());
+                p.setAuthorId(pOld.getAuthorId());
+                database.getPostDao().insert(p);
+            }
+        });
+    }
+
+    // Cambio al modo oscuro
+    public void nightmode(View v) {
         @SuppressLint("UseSwitchCompatOrMaterialCode") Switch swi = findViewById(R.id.switchNightmode);
         if(swi.isChecked()) {
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);

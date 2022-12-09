@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
@@ -18,6 +20,8 @@ public class DeleteActivity extends AppCompatActivity {
     private long elementId;
     private TextView tview;
     private String mensaje;
+
+    // --- Métodos de Callback ---
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class DeleteActivity extends AppCompatActivity {
         setForDelete();
     }
 
+    // --- Otros Métodos ---
+
+    // Prepara la UI para borrar una columna o una carpeta
     public void setForDelete(){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -54,11 +61,13 @@ public class DeleteActivity extends AppCompatActivity {
         });
     }
 
+    // Al presionar "Cancelar"
     public void onCancelDeleteButton(View v){
         Intent intent = new Intent(DeleteActivity.this, MenuLateralActivity.class);
         startActivity(intent);
     }
 
+    // Al presionar "Confirmar"
     public void onConfirmDeleteButton(View v){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -82,7 +91,7 @@ public class DeleteActivity extends AppCompatActivity {
                             mensaje += ". Se ha establecido la columna " + newActual.getNombre() + " como columna actual";
                         }
                         catch (Exception e){
-
+                            ;
                         }
                     }
                 }

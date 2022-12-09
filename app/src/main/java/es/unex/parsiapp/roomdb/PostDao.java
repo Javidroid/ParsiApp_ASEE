@@ -15,6 +15,7 @@ import es.unex.parsiapp.model.Post;
 
 @Dao
 public interface PostDao {
+    // SELECTS
     @Query("SELECT * FROM post WHERE idDb = :id_post")
     public Post getPost(long id_post);
     @Query("SELECT * FROM post")
@@ -23,10 +24,14 @@ public interface PostDao {
     public LiveData<List<Post>> getAllLiveData();
     @Query("SELECT * FROM post WHERE carpetaid = :carpeta_id")
     public LiveData<List<Post>> getAllPostsFromCarpetaLiveData(long carpeta_id);
+
+    // INSERTS
     @Insert(onConflict = REPLACE)
     public long insert(Post p);
     @Insert(onConflict = REPLACE)
     void bulkInsert(List<Post> postList);
+
+    // DELETES
     @Query("DELETE FROM post")
     public void deleteAll();
     @Query("DELETE FROM post WHERE idDb = :id_post")
@@ -35,6 +40,8 @@ public interface PostDao {
     public void deleteAllPostsFromCarpeta(long carpeta_id);
     @Query("DELETE FROM post WHERE carpetaid = -1")
     public void deleteAllPostsWithoutCarpeta();
+
+    // UPDATE
     @Update
     public int update(Post p);
 }

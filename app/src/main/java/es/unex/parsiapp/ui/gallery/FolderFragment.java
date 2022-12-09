@@ -18,7 +18,7 @@ import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterFolder;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentFolderBinding;
-import es.unex.parsiapp.folderContentActivity;
+import es.unex.parsiapp.ui.folderContentActivity;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
@@ -27,12 +27,9 @@ public class FolderFragment extends Fragment {
     private FolderViewModel mViewModel;
     private FragmentFolderBinding binding; // Binding
     private List<Carpeta> listCarpeta;
-
-    public static FolderFragment newInstance() {
-        return new FolderFragment();
-    }
-
     private View root;
+
+    // --- Métodos de Callback ---
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -51,13 +48,15 @@ public class FolderFragment extends Fragment {
         showFolders(root);
     }
 
+    // --- Otros métodos ---
+
+    // Muestra y actualiza las carpetas
     public void showFolders(View root){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(root.getContext());
-
                 listCarpeta = database.getCarpetaDao().getAll();
 
                 if(listCarpeta != null) {
@@ -82,6 +81,7 @@ public class FolderFragment extends Fragment {
         });
     }
 
+    // Ver los posts guardados en una carpeta
     public void moveToFolderContent(Carpeta item, View root){
         Intent intent = new Intent(root.getContext(), folderContentActivity.class);
         intent.putExtra("folderContent", item);

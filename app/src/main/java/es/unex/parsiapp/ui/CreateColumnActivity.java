@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,24 +11,26 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class CreateColumnActivity extends AppCompatActivity {
 
-    private RadioGroup radioGroup; // Grupo de botones de tipo radio
     private RadioButton radioButton; // Boton de tipo radio seleccionado actualmente
     private Columna editedColumn = null; // Columna que se esta editando
 
-    /* Metodos de Callback */
+    // --- Metodos de Callback ---
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_column);
 
         // Se obtiene el grupo de botones de tipo radio
-        this.radioGroup = (RadioGroup) findViewById(R.id.api_call_type_selection);
+        // Grupo de botones de tipo radio
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.api_call_type_selection);
         // Se obtiene el boton radio actualmente seleccionado
         this.radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
 
@@ -45,7 +47,7 @@ public class CreateColumnActivity extends AppCompatActivity {
         }
     }
 
-
+    // --- Otros métodos ---
 
     /* Prepara la IU y la Activity para editar una columna */
     public void setForEditColumn(long id_carpeta){
@@ -66,30 +68,35 @@ public class CreateColumnActivity extends AppCompatActivity {
                 AppExecutors.getInstance().mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        // Obtencion de todos los inputs de la IU
-                        EditText column_name = (EditText) findViewById(R.id.columnName);
-                        EditText query_or_user = (EditText) findViewById(R.id.queryOrUser);
-                        RadioButton rb_query = (RadioButton) findViewById(R.id.query_selection);
-                        RadioButton rb_user = (RadioButton) findViewById(R.id.user_selection);
-                        Button b = (Button) findViewById(R.id.create_column_button);
-
-                        // Cambiar sus datos a los de la columna
-                        column_name.setText(c.getNombre());
-                        query_or_user.setText(c.getApiCall());
-                        if(c.getApiCallType() == Columna.ApiCallType.QUERY){
-                            rb_query.setChecked(true);
-                            rb_user.setChecked(false);
-                        } else if (c.getApiCallType() == Columna.ApiCallType.USER){
-                            rb_query.setChecked(false);
-                            rb_user.setChecked(true);
-                        }
-
-                        // Se cambia el boton de "Editar" a "Crear"
-                        b.setText("Editar");
+                        setUIForEditColumn(c);
                     }
                 });
             }
         });
+    }
+
+    // Cambia la UI para editar una columna
+    public void setUIForEditColumn(Columna c){
+        // Obtencion de todos los inputs de la IU
+        EditText column_name = (EditText) findViewById(R.id.columnName);
+        EditText query_or_user = (EditText) findViewById(R.id.queryOrUser);
+        RadioButton rb_query = (RadioButton) findViewById(R.id.query_selection);
+        RadioButton rb_user = (RadioButton) findViewById(R.id.user_selection);
+        Button b = (Button) findViewById(R.id.create_column_button);
+
+        // Cambiar sus datos a los de la columna
+        column_name.setText(c.getNombre());
+        query_or_user.setText(c.getApiCall());
+        if(c.getApiCallType() == Columna.ApiCallType.QUERY){
+            rb_query.setChecked(true);
+            rb_user.setChecked(false);
+        } else if (c.getApiCallType() == Columna.ApiCallType.USER){
+            rb_query.setChecked(false);
+            rb_user.setChecked(true);
+        }
+
+        // Se cambia el boton de "Editar" a "Crear"
+        b.setText("Editar");
     }
 
     /* Escucha que boton de radio esta seleccionado actualmente y lo asigna a this.radioButton */

@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,14 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Usuario;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.roomdb.UsuarioDao;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private String mensaje;
     private boolean logged = false;
+
+    // --- Métodos de Callback ---
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,9 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // --- Otros métodos ---
+
+    // Registro del usuario
     public void registro(String username, String password){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -57,7 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                         mensaje = "¡Bienvenido a Parsi, " + newU.getUsername() + "!";
                         logged = true;
-
                     } else {
                         mensaje = "¡No puedes dejar vacío ningún campo al registrarte!";
                         logged = false;

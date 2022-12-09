@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,16 +26,8 @@ import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.tweetDetailsActivity;
+import es.unex.parsiapp.ui.tweetDetailsActivity;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
-import es.unex.parsiapp.twitterapi.TweetResults;
-import es.unex.parsiapp.twitterapi.TwitterService;
-import es.unex.parsiapp.twitterapi.UserData;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
 
@@ -44,8 +35,9 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding; // Binding
     private PostRepository mRepository;
     private View rootV;
-
     private SwipeRefreshLayout refresh;
+
+    // --- Métodos de Callback ---
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +48,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Obtención del mRepository
         mRepository = PostRepository.getInstance(ParsiDatabase.getInstance(getContext()).getPostDao(), PostNetworkDataSource.getInstance());
         mRepository.getCurrentPostsHome().observe(getViewLifecycleOwner(), this::onPostsLoaded);
 
@@ -64,11 +57,10 @@ public class HomeFragment extends Fragment {
         // Mostrar tweets
         showTweetsFromColumna(root);
 
+        // Refresh
         refresh = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
-
         refresh.setColorSchemeResources(R.color.white);
         refresh.setProgressBackgroundColorSchemeResource(R.color.blueParsi);
-
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -79,6 +71,14 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    // --- Otros métodos ---
 
     // Muestra los tweets realizando una llamada a la API
     public void showTweetsFromColumna(View root){
@@ -124,12 +124,6 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(listAdapter);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
     public void showPost(Post item, View root){
         Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
         intent.putExtra("Post", item);
@@ -137,78 +131,4 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    /*
-    public void tweetsFromQuery(TwitterService twitterService, String query, View root){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String max_posts = sharedPreferences.getString("max_posts", "20");
-
-        twitterService.tweetsFromQuery(query, max_posts, "Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
-            @Override
-            public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
-               onResponseTweets(response, root);
-            }
-
-            @Override
-            public void onFailure(Call<TweetResults> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    public void tweetsFromUser(TwitterService twitterService, String query, View root){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String max_posts = sharedPreferences.getString("max_posts", "20");
-        final String[] userId = {null};
-
-        twitterService.userIDfromUsername(query, "Bearer " + bearerTokenApi).enqueue(new Callback<UserData>() {
-            @Override
-            public void onResponse(Call<UserData> call, Response<UserData> response) {
-                UserData udata = response.body();
-                if(udata == null){
-                    Toast.makeText(getContext(), "No se ha encontrado el usuario especificado en la columna", Toast.LENGTH_SHORT).show();
-                } else {
-                    userId[0] = udata.getData().getId();
-                    twitterService.tweetsFromUser(userId[0], max_posts, "Bearer " + bearerTokenApi).enqueue(new Callback<TweetResults>() {
-                        @Override
-                        public void onResponse(Call<TweetResults> call, Response<TweetResults> response) {
-                            onResponseTweets(response, root);
-                        }
-
-                        @Override
-                        public void onFailure(Call<TweetResults> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserData> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    public void onResponseTweets(Response<TweetResults> response, View root){
-        TweetResults tweetResults = response.body();
-        try {
-            // Conversion a lista de Posts de los tweets recibidos
-            listposts = tweetResults.toPostList();
-
-            // Actualizar vista
-            ListAdapterPost listAdapter = new ListAdapterPost(listposts, root.getContext(), new ListAdapterPost.OnItemClickListener() {
-                @Override
-                public void onItemClick(Post item) {
-                    showPost(item, root);
-                }
-            });
-            RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-            recyclerView.setAdapter(listAdapter);
-        } catch (Exception e){
-            System.out.println("No se han encontrado tweets");
-        }
-    }
-    */
 }
