@@ -21,12 +21,14 @@ import java.util.List;
 
 import es.unex.parsiapp.AppExecutors;
 import es.unex.parsiapp.ListAdapterPost;
+import es.unex.parsiapp.PostRepository;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.tweetDetailsActivity;
+import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 import es.unex.parsiapp.twitterapi.TweetResults;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import es.unex.parsiapp.twitterapi.UserData;
@@ -40,12 +42,8 @@ public class HomeFragment extends Fragment {
 
     private List<Post> listposts; // Lista de posts en Home
     private FragmentHomeBinding binding; // Binding
-    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8"; // Token API
-    // Objeto Retrofit para realizar llamadas a la API
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://api.twitter.com/2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+    private PostRepository mRepository;
+    private View rootV;
 
     private SwipeRefreshLayout refresh;
 
@@ -58,6 +56,11 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        mRepository = PostRepository.getInstance(ParsiDatabase.getInstance(getContext()).getPostDao(), PostNetworkDataSource.getInstance());
+        mRepository.getCurrentPostsHome().observe(getViewLifecycleOwner(), this::onPostsLoaded);
+
+        this.rootV = root;
+
         // Mostrar tweets
         showTweetsFromColumna(root);
 
@@ -69,7 +72,7 @@ public class HomeFragment extends Fragment {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showTweetsFromColumna(root);
+                showTweetsFromColumna(rootV);
                 refresh.setRefreshing(false);
             }
         });
@@ -79,9 +82,8 @@ public class HomeFragment extends Fragment {
 
     // Muestra los tweets realizando una llamada a la API
     public void showTweetsFromColumna(View root){
-        // --- API --- //
-        // NO se pueden hacer llamadas a la API en el hilo principal
-        TwitterService twitterService = retrofit.create(TwitterService.class);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String max_posts = sharedPreferences.getString("max_posts", "20");
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -91,17 +93,12 @@ public class HomeFragment extends Fragment {
 
                 // Obtencion columna actual
                 Columna c = database.getColumnaDao().getColumnaActual();
-                if(c != null) {
-                    String query = c.getApiCall();
-                    // Hacer un .enqueue es equivalente a llamarla en un hilo separado
-                    if(c.getApiCallType() == Columna.ApiCallType.QUERY){
-                        tweetsFromQuery(twitterService, query, root);
-                    } else if (c.getApiCallType() == Columna.ApiCallType.USER){
-                        tweetsFromUser(twitterService, query, root);
-                    }
+
+                if (c != null) {
                     AppExecutors.getInstance().mainThread().execute(new Runnable() {
                         @Override
                         public void run() {
+                            mRepository.setColumna(c, max_posts);
                             TextView t = (TextView) root.findViewById(R.id.addColumn);
                             t.setVisibility(View.INVISIBLE);
                         }
@@ -109,6 +106,22 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void onPostsLoaded(List<Post> posts){
+        System.out.println("ACCEDIENDO A ONPOSTSLOADED");
+        listposts = posts;
+        // Actualizar vista
+        ListAdapterPost listAdapter = new ListAdapterPost(listposts, rootV.getContext(), new ListAdapterPost.OnItemClickListener() {
+            @Override
+            public void onItemClick(Post item) {
+                showPost(item, rootV);
+            }
+        });
+        RecyclerView recyclerView = rootV.findViewById(R.id.listRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(rootV.getContext()));
+        recyclerView.setAdapter(listAdapter);
     }
 
     @Override
@@ -124,6 +137,7 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
+    /*
     public void tweetsFromQuery(TwitterService twitterService, String query, View root){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String max_posts = sharedPreferences.getString("max_posts", "20");
@@ -196,4 +210,5 @@ public class HomeFragment extends Fragment {
             System.out.println("No se han encontrado tweets");
         }
     }
+    */
 }

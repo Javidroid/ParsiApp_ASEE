@@ -40,6 +40,7 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
 
     //Establece el diseño que tiene que tener cada post al mostrarse
     @Override
+    @SuppressWarnings("unchecked")
     public ListAdapterPost.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View view = mInlfater.inflate(R.layout.list_tweet, null);
         return new ListAdapterPost.ViewHolder(view);

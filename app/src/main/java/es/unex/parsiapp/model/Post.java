@@ -18,15 +18,15 @@ public class Post implements Serializable {
     private String id;  // ID única del Twit
     @ColumnInfo(name="carpetaid")
     private long idCarpeta; // ID de la BD de la carpeta que contiene al post
-    @Ignore
+    @ColumnInfo(name="authorid")
     private String authorId; // ID del autor
-    @Ignore
+    @ColumnInfo(name="authorUsername")
     private String authorUsername; // Nombre de usuario del autor
-    @Ignore
+    @ColumnInfo(name="contenido")
     private String contenido;  // Contenido textual del Twit (no creo que haga falta guardarlo)
-    @Ignore
+    @ColumnInfo(name="profilePicture")
     private String profilePicture; // URL de la foto de perfil del autor
-    @Ignore
+    @ColumnInfo(name="timestamp")
     private String timestamp; // Fecha y hora de creacion del tweet
 
     // --- Constructores ---
@@ -41,10 +41,22 @@ public class Post implements Serializable {
         this.idCarpeta = idCarpeta;
     }
 
+    @Ignore
     public Post(long idDb, String id, long idCarpeta){
         this.idDb = idDb;
         this.id = id;
         this.idCarpeta = idCarpeta;
+    }
+
+    public Post(long idDb, String id, long idCarpeta, String authorId, String authorUsername, String contenido, String profilePicture, String timestamp){
+        this.idDb = idDb;
+        this.id = id;
+        this.idCarpeta = idCarpeta;
+        this.authorId = authorId;
+        this.authorUsername = authorUsername;
+        this.contenido = contenido;
+        this.profilePicture = profilePicture;
+        this.timestamp = timestamp;
     }
 
     // --- Métodos get y set ---

@@ -196,15 +196,20 @@ public class MenuLateralActivity extends AppCompatActivity{
                             Toast.makeText(MenuLateralActivity.this, data, Toast.LENGTH_SHORT).show();
                             folder_id[0] = folders.get(which).getIdDb();
 
-
                             // Obtencion del ID del post
                             ImageButton imgButton = (ImageButton) v;
-                            String post_id = (String) imgButton.getTag(R.string.idSave);
-                            // Insertar post
-                            Post p = new Post(post_id, folder_id[0]);
+                            long post_id = (long) imgButton.getTag(R.string.idSaveDb);
+
                             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Post pOld = database.getPostDao().getPost(post_id);
+                                    Post p = new Post(pOld.getId(), folder_id[0]);
+                                    p.setContenido(pOld.getContenido());
+                                    p.setTimestamp(pOld.getTimestamp());
+                                    p.setAuthorUsername(pOld.getAuthorUsername());
+                                    p.setProfilePicture(pOld.getProfilePicture());
+                                    p.setAuthorId(pOld.getAuthorId());
                                     database.getPostDao().insert(p);
                                 }
                             });

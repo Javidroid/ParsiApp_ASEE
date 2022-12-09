@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +18,10 @@ import java.util.List;
 
 import es.unex.parsiapp.databinding.FragmentFolderContentBinding;
 import es.unex.parsiapp.model.Carpeta;
+import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
+import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 import es.unex.parsiapp.twitterapi.SingleTweet;
 import es.unex.parsiapp.twitterapi.TwitterService;
 import retrofit2.Call;
@@ -30,23 +33,45 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class folderContentActivity extends AppCompatActivity {
     private List<Post> listposts;
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://api.twitter.com/2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
     private long idFolder;
     ImageButton b;
-    private String bearerTokenApi = "AAAAAAAAAAAAAAAAAAAAAN17jAEAAAAARPbZdHUXnMf%2F1qOKDcvaADYaD8Y%3DCJ2WH2ItpWhqKEvdwIz7hWu6qnUU9UlbYe0LEQtd7E7EfvJRU8";
-    private FragmentFolderContentBinding binding;
+    private PostRepository mRepository;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_folder_content);
 
+        mRepository = PostRepository.getInstance(ParsiDatabase.getInstance(this).getPostDao(), PostNetworkDataSource.getInstance());
+        mRepository.getCurrentPostsFolder().observe(this, this::onPostsLoaded);
+
         showContentFolder();
     }
 
+    public void showContentFolder(){
+        Carpeta item = (Carpeta) getIntent().getSerializableExtra("folderContent");
+        idFolder = item.getIdDb();
+        mRepository.setCarpeta(item);
+    }
+
+    public void onPostsLoaded(List<Post> posts){
+        System.out.println("ACCEDIENDO A ONPOSTSLOADED");
+        listposts = posts;
+
+        // Actualizar vista
+        ListAdapterPostSaved listAdapter = new ListAdapterPostSaved(listposts, folderContentActivity.this, new ListAdapterPostSaved.OnItemClickListener(){
+            @Override
+            public void onItemClick(Post item) {
+                detailPostFromFolder(item);
+            }
+        });
+
+        RecyclerView recyclerView = findViewById(R.id.listRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(folderContentActivity.this));
+        recyclerView.setAdapter(listAdapter);
+    }
+
+    /*
     public void showContentFolder(){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -99,7 +124,7 @@ public class folderContentActivity extends AppCompatActivity {
             }
         });
     }
-
+    */
 
     public void detailPostFromFolder(Post item){
         Intent intent = new Intent(folderContentActivity.this, tweetDetailsActivity.class);
