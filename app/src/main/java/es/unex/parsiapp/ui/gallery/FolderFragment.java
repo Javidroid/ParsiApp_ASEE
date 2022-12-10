@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.ListAdapterFolder;
+import es.unex.parsiapp.util.AppExecutors;
+import es.unex.parsiapp.listadapter.ListAdapterFolder;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentFolderBinding;
 import es.unex.parsiapp.ui.folderContentActivity;

@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Usuario;
 import es.unex.parsiapp.roomdb.ParsiDatabase;

@@ -2,7 +2,6 @@ package es.unex.parsiapp.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,7 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;

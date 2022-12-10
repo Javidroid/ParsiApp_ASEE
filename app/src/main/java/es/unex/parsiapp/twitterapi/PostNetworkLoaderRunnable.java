@@ -1,13 +1,10 @@
 package es.unex.parsiapp.twitterapi;
 
-import android.widget.Toast;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.R;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import retrofit2.Call;

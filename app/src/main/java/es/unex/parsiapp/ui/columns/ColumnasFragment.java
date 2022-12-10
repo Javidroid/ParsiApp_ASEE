@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -14,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.ListAdapterColumna;
+import es.unex.parsiapp.util.AppExecutors;
+import es.unex.parsiapp.listadapter.ListAdapterColumna;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentColumnasBinding;
 import es.unex.parsiapp.model.Columna;

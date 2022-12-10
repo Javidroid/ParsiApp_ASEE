@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.repository;
 
 import android.util.Log;
 
@@ -17,6 +17,7 @@ import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.PostDao;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
+import es.unex.parsiapp.util.AppExecutors;
 
 public class PostRepository {
     private static final String LOG_TAG = PostRepository.class.getSimpleName();

@@ -11,7 +11,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.roomdb.ParsiDatabase;

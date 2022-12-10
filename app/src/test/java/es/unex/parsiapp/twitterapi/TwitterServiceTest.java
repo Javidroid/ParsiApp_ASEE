@@ -2,24 +2,13 @@ package es.unex.parsiapp.twitterapi;
 
 import static org.junit.Assert.*;
 
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.R;
-import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
-import es.unex.parsiapp.roomdb.ParsiDatabase;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

@@ -16,11 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.ListAdapterPost;
-import es.unex.parsiapp.PostRepository;
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.util.AppContainer;
+import es.unex.parsiapp.util.AppExecutors;
+import es.unex.parsiapp.listadapter.ListAdapterPost;
+import es.unex.parsiapp.repository.PostRepository;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
 import es.unex.parsiapp.model.Columna;
@@ -33,28 +37,33 @@ public class HomeFragment extends Fragment {
 
     private List<Post> listposts; // Lista de posts en Home
     private FragmentHomeBinding binding; // Binding
-    private PostRepository mRepository;
     private View rootV;
     private SwipeRefreshLayout refresh;
+    private ListAdapterPost mAdapter;
+    private HomeViewModel mViewModel;
+    private RecyclerView mRecyclerView;
 
     // --- Métodos de Callback ---
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         // Obtener view
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Obtención del mRepository
-        mRepository = PostRepository.getInstance(ParsiDatabase.getInstance(getContext()).getPostDao(), PostNetworkDataSource.getInstance());
-        mRepository.getCurrentPostsHome().observe(getViewLifecycleOwner(), this::onPostsLoaded);
-
         this.rootV = root;
 
-        // Mostrar tweets
+        AppContainer appContainer = ((MyApplication) requireActivity().getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, appContainer.factory).get(HomeViewModel.class);
+        mViewModel.getPosts().observe(getViewLifecycleOwner(), posts -> {
+            mAdapter.swap(posts);
+            //if(posts != null && posts.size() != 0) showTweetsFromColumna(root);
+        });
+
+        mRecyclerView = rootV.findViewById(R.id.listRecyclerView);
+
+        listposts = new ArrayList<>();
         showTweetsFromColumna(root);
 
         // Refresh
@@ -64,7 +73,7 @@ public class HomeFragment extends Fragment {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showTweetsFromColumna(rootV);
+                showTweetsFromColumna(root);
                 refresh.setRefreshing(false);
             }
         });
@@ -85,12 +94,18 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String max_posts = sharedPreferences.getString("max_posts", "20");
 
+        mAdapter = new ListAdapterPost(listposts, rootV.getContext(), new ListAdapterPost.OnItemClickListener() {
+            @Override
+            public void onItemClick(Post item) {
+                showPost(item, rootV);
+            }
+        });
+
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 // Declaracion de la instancia de la BD
                 ParsiDatabase database = ParsiDatabase.getInstance(getContext());
-
                 // Obtencion columna actual
                 Columna c = database.getColumnaDao().getColumnaActual();
 
@@ -98,30 +113,18 @@ public class HomeFragment extends Fragment {
                     AppExecutors.getInstance().mainThread().execute(new Runnable() {
                         @Override
                         public void run() {
-                            mRepository.setColumna(c, max_posts);
+                            mViewModel.setColumna(c, max_posts);
                             TextView t = (TextView) root.findViewById(R.id.addColumn);
                             t.setVisibility(View.INVISIBLE);
+
+                            mRecyclerView.setHasFixedSize(true);
+                            mRecyclerView.setLayoutManager(new LinearLayoutManager(rootV.getContext()));
+                            mRecyclerView.setAdapter(mAdapter);
                         }
                     });
                 }
             }
         });
-    }
-
-    public void onPostsLoaded(List<Post> posts){
-        System.out.println("ACCEDIENDO A ONPOSTSLOADED");
-        listposts = posts;
-        // Actualizar vista
-        ListAdapterPost listAdapter = new ListAdapterPost(listposts, rootV.getContext(), new ListAdapterPost.OnItemClickListener() {
-            @Override
-            public void onItemClick(Post item) {
-                showPost(item, rootV);
-            }
-        });
-        RecyclerView recyclerView = rootV.findViewById(R.id.listRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(rootV.getContext()));
-        recyclerView.setAdapter(listAdapter);
     }
 
     public void showPost(Post item, View root){

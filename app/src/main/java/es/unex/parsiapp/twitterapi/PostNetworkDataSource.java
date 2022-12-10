@@ -1,12 +1,11 @@
 package es.unex.parsiapp.twitterapi;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 

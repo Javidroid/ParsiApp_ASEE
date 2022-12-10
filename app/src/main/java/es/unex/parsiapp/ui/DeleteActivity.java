@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import es.unex.parsiapp.AppExecutors;
+import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;

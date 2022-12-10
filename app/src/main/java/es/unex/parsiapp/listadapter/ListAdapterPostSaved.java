@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.listadapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Post;
 
 public class ListAdapterPostSaved extends RecyclerView.Adapter<ListAdapterPostSaved.ViewHolder> {

@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.listadapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Post;
 
 public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHolder> {
@@ -40,7 +41,6 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
 
     //Establece el diseño que tiene que tener cada post al mostrarse
     @Override
-    @SuppressWarnings("unchecked")
     public ListAdapterPost.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View view = mInlfater.inflate(R.layout.list_tweet, null);
         return new ListAdapterPost.ViewHolder(view);
@@ -54,6 +54,10 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
     //Reestablece el contenidode la variable mData, es decir una nueva lista de posts
     public void setItems(List<Post> postList) { mData = postList;}
 
+    public void swap(List<Post> dataset){
+        mData = dataset;
+        notifyDataSetChanged();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Elementos de la UI

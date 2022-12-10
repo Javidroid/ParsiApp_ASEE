@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import es.unex.parsiapp.AppExecutors;
-import es.unex.parsiapp.ListAdapterPostSaved;
-import es.unex.parsiapp.PostRepository;
+import es.unex.parsiapp.util.AppExecutors;
+import es.unex.parsiapp.listadapter.ListAdapterPostSaved;
+import es.unex.parsiapp.repository.PostRepository;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;

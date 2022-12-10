@@ -1,4 +1,4 @@
-package es.unex.parsiapp;
+package es.unex.parsiapp.listadapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Columna;
 
 public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.ViewHolder>{
