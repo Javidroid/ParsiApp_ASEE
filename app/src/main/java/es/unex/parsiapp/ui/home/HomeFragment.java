@@ -73,7 +73,8 @@ public class HomeFragment extends Fragment {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showTweetsFromColumna(root);
+                //showTweetsFromColumna(root);
+                mViewModel.onRefresh();
                 refresh.setRefreshing(false);
             }
         });
