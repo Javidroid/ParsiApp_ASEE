@@ -1,5 +1,6 @@
 package es.unex.parsiapp.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,6 +21,8 @@ public interface CarpetaDao {
     public Carpeta getFolder(long carpeta_id);
     @Query("SELECT * FROM post WHERE carpetaid = :carpeta_id")
     public List<Post> getAllPostsFromCarpeta(long carpeta_id);
+    @Query("SELECT * FROM carpeta")
+    public LiveData<List<Carpeta>> getAllLiveData();
 
     // INSERT
     @Insert

@@ -15,6 +15,8 @@ import java.util.Map;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
+import es.unex.parsiapp.roomdb.CarpetaDao;
+import es.unex.parsiapp.roomdb.ColumnaDao;
 import es.unex.parsiapp.roomdb.PostDao;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 import es.unex.parsiapp.util.AppExecutors;
@@ -24,7 +26,11 @@ public class PostRepository {
 
     // For Singleton instantiation
     private static PostRepository sInstance;
+
     private final PostDao mPostDao;
+    private final CarpetaDao mCarpetaDao;
+    private final ColumnaDao mColumnaDao;
+
     private final PostNetworkDataSource mPostNetworkDataSource;
     private final AppExecutors mExecutors = AppExecutors.getInstance();
     private final MutableLiveData<Columna> columnaFilterLiveData = new MutableLiveData<>();
@@ -32,8 +38,11 @@ public class PostRepository {
     private final Map<Columna, Long> lastUpdateTimeMillisMap = new HashMap<>();
     private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 30000;
 
-    private PostRepository(PostDao postDao, PostNetworkDataSource postNetworkDataSource){
+    private PostRepository(PostDao postDao, CarpetaDao folderDao, ColumnaDao colDao, PostNetworkDataSource postNetworkDataSource){
         mPostDao = postDao;
+        mCarpetaDao = folderDao;
+        mColumnaDao = colDao;
+
         mPostNetworkDataSource = postNetworkDataSource;
 
         // Live Data que obtiene los Posts de la red:
@@ -55,10 +64,10 @@ public class PostRepository {
         });
     }
 
-    public synchronized static PostRepository getInstance(PostDao dao, PostNetworkDataSource nds){
+    public synchronized static PostRepository getInstance(PostDao pdao, CarpetaDao fdao, ColumnaDao cdao, PostNetworkDataSource nds){
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new PostRepository(dao, nds);
+            sInstance = new PostRepository(pdao, fdao, cdao, nds);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
@@ -88,7 +97,7 @@ public class PostRepository {
     }
 
     public LiveData<List<Post>> getCurrentPostsHome() {
-        System.out.println("OBTENIENDO TODOS LOS POSTS DE HOME");
+        System.out.println("OBTENIENDO TODOS LOS POSTS DE HOME (POST REPOSITORY)");
         return Transformations.switchMap(columnaFilterLiveData, new Function<Columna, LiveData<List<Post>>>() {
             @Override
             public LiveData<List<Post>> apply(Columna input) {
@@ -98,12 +107,21 @@ public class PostRepository {
     }
 
     public LiveData<List<Post>> getCurrentPostsFolder() {
+        System.out.println("OBTENIENDO TODOS LOS POSTS DE UNA CARPETA (POST REPOSITORY)");
         return Transformations.switchMap(carpetaFilterLiveData, new Function<Long, LiveData<List<Post>>>() {
             @Override
             public LiveData<List<Post>> apply(Long input) {
                 return mPostDao.getAllPostsFromCarpetaLiveData(input);
             }
         });
+    }
+
+    public LiveData<List<Carpeta>> getAllFolders(){
+        return mCarpetaDao.getAllLiveData();
+    }
+
+    public LiveData<List<Columna>> getAllColumnas(){
+        return mColumnaDao.getAllFromLiveData();
     }
 
     private boolean isFetchNeeded(Columna c){

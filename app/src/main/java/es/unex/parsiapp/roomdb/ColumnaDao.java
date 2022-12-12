@@ -1,5 +1,6 @@
 package es.unex.parsiapp.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -19,6 +20,8 @@ public interface ColumnaDao {
     public Columna getColumna(long columna_id);
     @Query("SELECT * FROM columna WHERE columnaActual = 1")
     public Columna getColumnaActual();
+    @Query("SELECT * FROM columna")
+    public LiveData<List<Columna>> getAllFromLiveData();
 
     // INSERT
     @Insert
