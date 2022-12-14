@@ -21,7 +21,7 @@ import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 
-public class tweetDetailsActivity extends AppCompatActivity {
+public class TweetDetailsActivity extends AppCompatActivity {
 
     private ShapeableImageView userImage;
     private TextView nombre, userName, tweet, tweetID;
@@ -70,7 +70,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
             public void run() {
 
                 // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(tweetDetailsActivity.this);
+                ParsiDatabase database = ParsiDatabase.getInstance(TweetDetailsActivity.this);
                 List<Carpeta> folders = database.getCarpetaDao().getAll();
                 String[] nameFolders = new String[folders.size()];
 
@@ -79,7 +79,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
                 }
 
                 save = (ImageButton) v;
-                AlertDialog.Builder popupFolders = new AlertDialog.Builder(tweetDetailsActivity.this);
+                AlertDialog.Builder popupFolders = new AlertDialog.Builder(TweetDetailsActivity.this);
 
                 popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
                     @Override
@@ -102,7 +102,7 @@ public class tweetDetailsActivity extends AppCompatActivity {
     // Guarda un post
     public void savePostInFolder(View v, List<Carpeta> folders, int which, ParsiDatabase database){
         String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
-        Toast.makeText(tweetDetailsActivity.this, data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(TweetDetailsActivity.this, data, Toast.LENGTH_SHORT).show();
         long folder_id = folders.get(which).getIdDb();
 
         // Obtencion del ID del post

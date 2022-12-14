@@ -130,15 +130,12 @@ public class PostRepository {
 
     public void setColumnBeingEdited(long id_columna){
         columnaBeingEditedFilterLiveData.setValue(id_columna);
-        System.out.println("COLUMNA INTRODUCIDA EN MUTABLE");
     }
 
     public LiveData<Columna> getColumnBeingEdited(){
-       System.out.println("ENTRANDO EN GETCOLUMN REPOSITORY");
        return Transformations.switchMap(columnaBeingEditedFilterLiveData, new Function<Long, LiveData<Columna>>() {
            @Override
            public LiveData<Columna> apply(Long input) {
-               System.out.println("COLUMNA DEVUELTA ---> " + mColumnaDao.getColumnaLiveData(input).getValue().getNombre());
                return mColumnaDao.getColumnaLiveData(input);
            }
        });

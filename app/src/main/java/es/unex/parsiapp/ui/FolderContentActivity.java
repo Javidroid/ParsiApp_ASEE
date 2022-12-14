@@ -13,10 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import es.unex.parsiapp.MyApplication;
-import es.unex.parsiapp.ui.home.HomeViewModel;
 import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.listadapter.ListAdapterPostSaved;
@@ -25,7 +22,6 @@ import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 
 
 public class FolderContentActivity extends AppCompatActivity {
@@ -79,7 +75,7 @@ public class FolderContentActivity extends AppCompatActivity {
 
     // Ir a los detalles de un Post desde una carpeta
     public void detailPostFromFolder(Post item){
-        Intent intent = new Intent(FolderContentActivity.this, tweetDetailsActivity.class);
+        Intent intent = new Intent(FolderContentActivity.this, TweetDetailsActivity.class);
         intent.putExtra("Post", item);
         intent.putExtra("Saved", 1);
         startActivity(intent);

@@ -11,28 +11,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import es.unex.parsiapp.MyApplication;
 import es.unex.parsiapp.util.AppContainer;
-import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.listadapter.ListAdapterPost;
-import es.unex.parsiapp.repository.PostRepository;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.databinding.FragmentHomeBinding;
-import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
-import es.unex.parsiapp.roomdb.ParsiDatabase;
-import es.unex.parsiapp.ui.tweetDetailsActivity;
-import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
+import es.unex.parsiapp.ui.TweetDetailsActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -112,7 +102,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void showPost(Post item, View root){
-        Intent intent = new Intent(root.getContext(), tweetDetailsActivity.class);
+        Intent intent = new Intent(root.getContext(), TweetDetailsActivity.class);
         intent.putExtra("Post", item);
         intent.putExtra("Saved", 0);
         startActivity(intent);

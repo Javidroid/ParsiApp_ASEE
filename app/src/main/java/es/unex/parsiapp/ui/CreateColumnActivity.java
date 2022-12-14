@@ -49,8 +49,8 @@ public class CreateColumnActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.CCfactory).get(CreateColumnViewModel.class);
 
         mViewModel.getColumnBeingEdited().observe(this, columna -> {
-            System.out.println("OBSERVER ----->" + columna);
             editedColumn = columna;
+            setUIForEditColumn(editedColumn);
         });
 
         // Si se esta editando una columna, se prepara la IU para cargar los datos
@@ -58,8 +58,7 @@ public class CreateColumnActivity extends AppCompatActivity {
             long id_columna = 1;
             id_columna = getIntent().getLongExtra("idcolumna", id_columna);
             mViewModel.setColumnBeingEdited(id_columna);
-            setUIForEditColumn(editedColumn);
-        }
+       }
     }
 
     // --- Otros métodos ---

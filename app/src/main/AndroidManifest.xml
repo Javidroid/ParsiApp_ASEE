@@ -57,7 +57,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.tweetDetailsActivity"
+            android:name=".ui.TweetDetailsActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
