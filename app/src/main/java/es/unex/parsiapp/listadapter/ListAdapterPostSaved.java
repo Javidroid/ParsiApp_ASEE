@@ -1,5 +1,6 @@
 package es.unex.parsiapp.listadapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,13 @@ public class ListAdapterPostSaved extends RecyclerView.Adapter<ListAdapterPostSa
 
     //Obtiene el numero de post que hay en una lista
     @Override
-    public int getItemCount(){ return mData.size();}
+    public int getItemCount(){
+        if(mData != null){
+            return mData.size();
+        } else {
+            return 0;
+        }
+    }
 
     //Establece el diseño que tiene que tener cada post al mostrarse
     @Override
@@ -54,6 +61,10 @@ public class ListAdapterPostSaved extends RecyclerView.Adapter<ListAdapterPostSa
     //Reestablece el contenidode la variable mData, es decir una nueva lista de posts
     public void setItems(List<Post> postList) { mData = postList;}
 
+    public void swap(List<Post> dataset){
+        mData = dataset;
+        notifyDataSetChanged();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Elementos de la UI

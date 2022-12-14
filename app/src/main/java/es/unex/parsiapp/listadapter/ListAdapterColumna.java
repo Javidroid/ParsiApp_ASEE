@@ -35,7 +35,13 @@ public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.
 
     //Obtiene el numero de columnas que hay en una lista
     @Override
-    public int getItemCount(){ return mData.size();}
+    public int getItemCount(){
+        if (mData != null){
+            return mData.size();
+        } else {
+            return 0;
+        }
+    }
 
     //Establece el diseño que tiene que tener cada columna al mostrarse
     @Override
@@ -47,6 +53,11 @@ public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.
     @Override
     public void onBindViewHolder(@NonNull final ListAdapterColumna.ViewHolder holder, final int position) {
         holder.bindData(mData.get(position));
+    }
+
+    public void swap(List<Columna> dataset){
+        mData = dataset;
+        notifyDataSetChanged();
     }
 
     //Reestablece el contenidode la variable mData, es decir una nueva lista de columna
@@ -77,6 +88,9 @@ public class ListAdapterColumna extends RecyclerView.Adapter<ListAdapterColumna.
             if (item.isColumnaActual()) {
                 ImageView imageView = (ImageView) itemView.findViewById(R.id.iconImageView);
                 imageView.setImageResource(R.drawable.ic_baseline_home_24);
+            } else {
+                ImageView imageView = (ImageView) itemView.findViewById(R.id.iconImageView);
+                imageView.setImageResource(R.drawable.columna_azul);
             }
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

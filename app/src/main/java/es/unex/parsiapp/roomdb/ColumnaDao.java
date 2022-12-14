@@ -22,6 +22,8 @@ public interface ColumnaDao {
     public Columna getColumnaActual();
     @Query("SELECT * FROM columna")
     public LiveData<List<Columna>> getAllFromLiveData();
+    @Query("SELECT * FROM columna WHERE idDb = :columna_id")
+    public LiveData<Columna> getColumnaLiveData(long columna_id);
 
     // INSERT
     @Insert

@@ -34,7 +34,13 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
 
     //Obtiene el numero de carpeta que hay en una lista
     @Override
-    public int getItemCount(){ return mData.size();}
+    public int getItemCount(){
+        if (mData != null){
+            return mData.size();
+        } else {
+            return 0;
+        }
+    }
 
     //Establece el diseño que tiene que tener cada carpeta al mostrarse
     @Override
@@ -51,6 +57,10 @@ public class ListAdapterFolder extends RecyclerView.Adapter<ListAdapterFolder.Vi
     //Reestablece el contenidode la variable mData, es decir una nueva lista de carpeta
     public void setItems(List<Carpeta> folderList) { mData = folderList;}
 
+    public void swap(List<Carpeta> dataset){
+        mData = dataset;
+        notifyDataSetChanged();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Elementos de la UI

@@ -37,7 +37,13 @@ public class ListAdapterPost extends RecyclerView.Adapter<ListAdapterPost.ViewHo
 
     //Obtiene el numero de post que hay en una lista
     @Override
-    public int getItemCount(){ return mData.size();}
+    public int getItemCount(){
+        if(mData != null){
+            return mData.size();
+        } else {
+            return 0;
+        }
+    }
 
     //Establece el diseño que tiene que tener cada post al mostrarse
     @Override

@@ -1,6 +1,7 @@
 package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.ui.home.HomeViewModel;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Columna;
@@ -20,6 +24,7 @@ public class CreateColumnActivity extends AppCompatActivity {
 
     private RadioButton radioButton; // Boton de tipo radio seleccionado actualmente
     private Columna editedColumn = null; // Columna que se esta editando
+    private CreateColumnViewModel mViewModel;
 
     // --- Metodos de Callback ---
 
@@ -39,41 +44,25 @@ public class CreateColumnActivity extends AppCompatActivity {
         boolean createColumn = true;
         createColumn = getIntent().getBooleanExtra("create", createColumn);
 
+
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.CCfactory).get(CreateColumnViewModel.class);
+
+        mViewModel.getColumnBeingEdited().observe(this, columna -> {
+            System.out.println("OBSERVER ----->" + columna);
+            editedColumn = columna;
+        });
+
         // Si se esta editando una columna, se prepara la IU para cargar los datos
         if (!createColumn){
             long id_columna = 1;
             id_columna = getIntent().getLongExtra("idcolumna", id_columna);
-            setForEditColumn(id_columna);
+            mViewModel.setColumnBeingEdited(id_columna);
+            setUIForEditColumn(editedColumn);
         }
     }
 
     // --- Otros métodos ---
-
-    /* Prepara la IU y la Activity para editar una columna */
-    public void setForEditColumn(long id_carpeta){
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(CreateColumnActivity.this);
-                // Obtencion de la columna y sus datos
-                Columna c = database.getColumnaDao().getColumna(id_carpeta);
-
-                // Se establece la columna que se esta editando actualmente
-                editedColumn = c;
-                editedColumn.setColumnaActual(c.isColumnaActual());
-
-                // Establecer datos de la columna en los inputs
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        setUIForEditColumn(c);
-                    }
-                });
-            }
-        });
-    }
 
     // Cambia la UI para editar una columna
     public void setUIForEditColumn(Columna c){
@@ -154,25 +143,8 @@ public class CreateColumnActivity extends AppCompatActivity {
     public void createColumn(String columnName, String query, Columna.ApiCallType apiCallType){
         Columna c = new Columna(columnName, query);
         c.setApiCallType(apiCallType);
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(CreateColumnActivity.this);
-
-                Columna oldC = database.getColumnaDao().getColumnaActual();
-                if(oldC != null){
-                    oldC.setColumnaActual(false);
-                    database.getColumnaDao().update(oldC);
-                }
-
-                // Insercion en BD
-                c.setColumnaActual(true);
-                long id = database.getColumnaDao().insert(c);
-                c.setIdDb(id);
-            }
-        });
+        c.setColumnaActual(true);
+        mViewModel.createColumna(c);
     }
 
     /* Edita una columna existente */
@@ -180,15 +152,6 @@ public class CreateColumnActivity extends AppCompatActivity {
         this.editedColumn.setNombre(columnName);
         this.editedColumn.setApiCall(query);
         this.editedColumn.setApiCallType(apiCallType);
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(CreateColumnActivity.this);
-                // Actualizacion en BD
-                database.getColumnaDao().update(editedColumn);
-            }
-        });
+        mViewModel.editColumna(editedColumn);
     }
 }

@@ -9,11 +9,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.ui.home.HomeViewModel;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.listadapter.ListAdapterPostSaved;
 import es.unex.parsiapp.repository.PostRepository;
@@ -24,10 +28,12 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 
 
-public class folderContentActivity extends AppCompatActivity {
-    private List<Post> listposts;
+public class FolderContentActivity extends AppCompatActivity {
+
     ImageButton b;
     private PostRepository mRepository;
+    private FolderContentViewModel mViewModel;
+    private ListAdapterPostSaved mAdapter;
 
     // --- Métodos de Callback ---
 
@@ -35,8 +41,21 @@ public class folderContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_folder_content);
 
-        mRepository = PostRepository.getInstance(ParsiDatabase.getInstance(this).getPostDao(), PostNetworkDataSource.getInstance());
-        mRepository.getCurrentPostsFolder().observe(this, this::onPostsLoaded);
+        ParsiDatabase db = ParsiDatabase.getInstance(this);
+
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.FCfactory).get(FolderContentViewModel.class);
+
+        mAdapter = new ListAdapterPostSaved(mViewModel.getPosts().getValue(), FolderContentActivity.this, new ListAdapterPostSaved.OnItemClickListener(){
+            @Override
+            public void onItemClick(Post item) {
+                detailPostFromFolder(item);
+            }
+        });
+
+        mViewModel.getPosts().observe(this, posts -> {
+            mAdapter.swap(posts);
+        });
 
         showContentFolder();
     }
@@ -46,30 +65,21 @@ public class folderContentActivity extends AppCompatActivity {
     // Muestra el contenido de la carpeta
     public void showContentFolder(){
         Carpeta item = (Carpeta) getIntent().getSerializableExtra("folderContent");
-        mRepository.setCarpeta(item);
+        mViewModel.setCarpeta(item);
+        onPostsLoaded();
     }
 
     // Actualiza la UI con los posts
-    public void onPostsLoaded(List<Post> posts){
-        listposts = posts;
-
-        // Actualizar vista
-        ListAdapterPostSaved listAdapter = new ListAdapterPostSaved(listposts, folderContentActivity.this, new ListAdapterPostSaved.OnItemClickListener(){
-            @Override
-            public void onItemClick(Post item) {
-                detailPostFromFolder(item);
-            }
-        });
-
+    public void onPostsLoaded(){
         RecyclerView recyclerView = findViewById(R.id.listRecyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(folderContentActivity.this));
-        recyclerView.setAdapter(listAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(FolderContentActivity.this));
+        recyclerView.setAdapter(mAdapter);
     }
 
     // Ir a los detalles de un Post desde una carpeta
     public void detailPostFromFolder(Post item){
-        Intent intent = new Intent(folderContentActivity.this, tweetDetailsActivity.class);
+        Intent intent = new Intent(FolderContentActivity.this, tweetDetailsActivity.class);
         intent.putExtra("Post", item);
         intent.putExtra("Saved", 1);
         startActivity(intent);
@@ -97,9 +107,9 @@ public class folderContentActivity extends AppCompatActivity {
             public void run() {
 
                 // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(folderContentActivity.this);
+                ParsiDatabase database = ParsiDatabase.getInstance(FolderContentActivity.this);
                 b = (ImageButton) v;
-                AlertDialog.Builder popupFolders = new AlertDialog.Builder(folderContentActivity.this);
+                AlertDialog.Builder popupFolders = new AlertDialog.Builder(FolderContentActivity.this);
 
                 popupFolders.setTitle("Borrar post de carpeta").setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @Override
@@ -113,7 +123,7 @@ public class folderContentActivity extends AppCompatActivity {
                                 database.getPostDao().delete(post_id);
                             }
                         });
-                        Toast.makeText(folderContentActivity.this, "Se ha borrado con éxito.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FolderContentActivity.this, "Se ha borrado con éxito.", Toast.LENGTH_SHORT).show();
                         showContentFolder();
                     }
                 }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

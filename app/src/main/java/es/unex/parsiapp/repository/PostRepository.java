@@ -12,13 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
 import es.unex.parsiapp.roomdb.CarpetaDao;
 import es.unex.parsiapp.roomdb.ColumnaDao;
+import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.roomdb.PostDao;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
+import es.unex.parsiapp.ui.CreateColumnActivity;
 import es.unex.parsiapp.util.AppExecutors;
 
 public class PostRepository {
@@ -31,17 +34,30 @@ public class PostRepository {
     private final CarpetaDao mCarpetaDao;
     private final ColumnaDao mColumnaDao;
 
+    private final LiveData<List<Carpeta>> carpetaList;
+    private final LiveData<List<Columna>> columnaList;
+    private LiveData<Columna> columnBeingEdited;
+
+
     private final PostNetworkDataSource mPostNetworkDataSource;
     private final AppExecutors mExecutors = AppExecutors.getInstance();
+
+    // MutableLiveData
     private final MutableLiveData<Columna> columnaFilterLiveData = new MutableLiveData<>();
     private final MutableLiveData<Long> carpetaFilterLiveData = new MutableLiveData<>();
-    private final Map<Columna, Long> lastUpdateTimeMillisMap = new HashMap<>();
-    private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 30000;
+    private final MutableLiveData<Long> columnaBeingEditedFilterLiveData = new MutableLiveData<>();
+
+    // Refresh
+    private final Map<String, Long> lastUpdateTimeMillisMap = new HashMap<>();
+    private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 10000;
 
     private PostRepository(PostDao postDao, CarpetaDao folderDao, ColumnaDao colDao, PostNetworkDataSource postNetworkDataSource){
         mPostDao = postDao;
         mCarpetaDao = folderDao;
         mColumnaDao = colDao;
+
+        carpetaList = mCarpetaDao.getAllLiveData();
+        columnaList = mColumnaDao.getAllFromLiveData();
 
         mPostNetworkDataSource = postNetworkDataSource;
 
@@ -73,11 +89,22 @@ public class PostRepository {
         return sInstance;
     }
 
-    public void setColumna(final Columna c, String max_posts){
-        columnaFilterLiveData.setValue(c);
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            if(isFetchNeeded(c)){
-                doFetchPosts(c, max_posts);
+    public void setColumna(String max_posts){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Columna c = mColumnaDao.getColumnaActual();
+                if(c != null){
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            columnaFilterLiveData.setValue(c);
+                        }
+                    });
+                    if(isFetchNeeded(c)){
+                        doFetchPosts(c, max_posts);
+                    }
+                }
             }
         });
     }
@@ -86,13 +113,44 @@ public class PostRepository {
         carpetaFilterLiveData.setValue(c.getIdDb());
     }
 
+    public void setColumnaActual(Columna c){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Obtencion columna actual
+                Columna oldC = mColumnaDao.getColumnaActual();
+                if(oldC != null){
+                    oldC.setColumnaActual(false);
+                    mColumnaDao.update(oldC);
+                }
+                mColumnaDao.update(c);
+            }
+        });
+    }
+
+    public void setColumnBeingEdited(long id_columna){
+        columnaBeingEditedFilterLiveData.setValue(id_columna);
+        System.out.println("COLUMNA INTRODUCIDA EN MUTABLE");
+    }
+
+    public LiveData<Columna> getColumnBeingEdited(){
+       System.out.println("ENTRANDO EN GETCOLUMN REPOSITORY");
+       return Transformations.switchMap(columnaBeingEditedFilterLiveData, new Function<Long, LiveData<Columna>>() {
+           @Override
+           public LiveData<Columna> apply(Long input) {
+               System.out.println("COLUMNA DEVUELTA ---> " + mColumnaDao.getColumnaLiveData(input).getValue().getNombre());
+               return mColumnaDao.getColumnaLiveData(input);
+           }
+       });
+    }
+
     public void doFetchPosts(Columna c, String max_posts){
         Log.d(LOG_TAG, "Fetching posts from API");
         System.out.println("Fetching posts from API");
         AppExecutors.getInstance().diskIO().execute(() -> {
             mPostDao.deleteAllPostsWithoutCarpeta();
             mPostNetworkDataSource.fetchPosts(c, max_posts);
-            lastUpdateTimeMillisMap.put(c, System.currentTimeMillis());
+            lastUpdateTimeMillisMap.put(c.getApiCall(), System.currentTimeMillis());
         });
     }
 
@@ -107,24 +165,50 @@ public class PostRepository {
     }
 
     public LiveData<List<Post>> getCurrentPostsFolder() {
-        System.out.println("OBTENIENDO TODOS LOS POSTS DE UNA CARPETA (POST REPOSITORY)");
         return Transformations.switchMap(carpetaFilterLiveData, new Function<Long, LiveData<List<Post>>>() {
             @Override
             public LiveData<List<Post>> apply(Long input) {
+                System.out.println("OBTENIENDO TODOS LOS POSTS DE UNA CARPETA (POST REPOSITORY)");
                 return mPostDao.getAllPostsFromCarpetaLiveData(input);
             }
         });
     }
 
     public LiveData<List<Carpeta>> getAllFolders(){
-        return mCarpetaDao.getAllLiveData();
+        return carpetaList;
     }
 
     public LiveData<List<Columna>> getAllColumnas(){
-        return mColumnaDao.getAllFromLiveData();
+        return columnaList;
+    }
+
+    public void createColumna(Columna c){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Columna oldC = mColumnaDao.getColumnaActual();
+                if(oldC != null){
+                    oldC.setColumnaActual(false);
+                    mColumnaDao.update(oldC);
+                }
+                mColumnaDao.insert(c);
+            }
+        });
+    }
+
+    public void editColumna(Columna c){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mColumnaDao.update(c);
+            }
+        });
     }
 
     private boolean isFetchNeeded(Columna c){
-        return true;
+        Long lastFetchTimeMillis = lastUpdateTimeMillisMap.get(c.getApiCall());
+        lastFetchTimeMillis = lastFetchTimeMillis == null ? 0L : lastFetchTimeMillis;
+        long timeFromLastFetch = System.currentTimeMillis() - lastFetchTimeMillis;
+        return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS;
     }
 }
