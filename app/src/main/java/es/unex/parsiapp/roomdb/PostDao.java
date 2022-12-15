@@ -18,6 +18,8 @@ public interface PostDao {
     // SELECTS
     @Query("SELECT * FROM post WHERE idDb = :id_post")
     public Post getPost(long id_post);
+    @Query("SELECT * FROM post WHERE id = :id_post")
+    public Post getPostById(String id_post);
     @Query("SELECT * FROM post")
     public List<Post> getAll();
     @Query("SELECT * FROM post WHERE carpetaid = -1")

@@ -22,7 +22,7 @@ public class TweetDetailsViewModel extends ViewModel {
         return mCarpetas;
     }
 
-    public void savePost(long post_id, long folder_id){
-        mRepository.savePost(post_id, folder_id);
+    public void savePost(String post_id, long folder_id){
+        mRepository.savePostDetails(post_id, folder_id);
     }
 }

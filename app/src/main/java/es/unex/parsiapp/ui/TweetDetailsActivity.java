@@ -103,7 +103,7 @@ public class TweetDetailsActivity extends AppCompatActivity {
 
         // Obtencion del ID del post
         ImageButton imgButton = (ImageButton) v;
-        long post_id = (long) imgButton.getTag(R.string.idSaveDb);
+        String post_id = (String) imgButton.getTag(R.string.idSave);
 
         mViewModel.savePost(post_id, folder_id);
     }

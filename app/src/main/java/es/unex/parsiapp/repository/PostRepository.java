@@ -39,7 +39,6 @@ public class PostRepository {
 
     private final LiveData<List<Carpeta>> carpetaList;
     private final LiveData<List<Columna>> columnaList;
-    private LiveData<Columna> columnBeingEdited;
 
 
     private final PostNetworkDataSource mPostNetworkDataSource;
@@ -56,7 +55,7 @@ public class PostRepository {
 
     // Refresh
     private final Map<String, Long> lastUpdateTimeMillisMap = new HashMap<>();
-    private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 10000;
+    private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 5000;
 
     private PostRepository(PostDao postDao, CarpetaDao folderDao, ColumnaDao colDao, UsuarioDao userDao, PostNetworkDataSource postNetworkDataSource){
         mPostDao = postDao;
@@ -206,15 +205,29 @@ public class PostRepository {
             @Override
             public void run() {
                 Post pOld = mPostDao.getPost(post_id);
-                Post p = new Post(pOld.getId(), folder_id);
-                p.setContenido(pOld.getContenido());
-                p.setTimestamp(pOld.getTimestamp());
-                p.setAuthorUsername(pOld.getAuthorUsername());
-                p.setProfilePicture(pOld.getProfilePicture());
-                p.setAuthorId(pOld.getAuthorId());
-                mPostDao.insert(p);
+                insertPost(pOld, folder_id);
             }
         });
+    }
+
+    public void savePostDetails(String post_id, long folder_id){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Post pOld = mPostDao.getPostById(post_id);
+                insertPost(pOld, folder_id);
+            }
+        });
+    }
+
+    public void insertPost(Post pOld, long folder_id){
+        Post p = new Post(pOld.getId(), folder_id);
+        p.setContenido(pOld.getContenido());
+        p.setTimestamp(pOld.getTimestamp());
+        p.setAuthorUsername(pOld.getAuthorUsername());
+        p.setProfilePicture(pOld.getProfilePicture());
+        p.setAuthorId(pOld.getAuthorId());
+        mPostDao.insert(p);
     }
 
     public void doFetchPosts(Columna c, String max_posts){
