@@ -2,6 +2,7 @@ package es.unex.parsiapp.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -9,12 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
@@ -23,9 +27,9 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class TweetDetailsActivity extends AppCompatActivity {
 
-    private ShapeableImageView userImage;
-    private TextView nombre, userName, tweet, tweetID;
-    private ImageButton share, save;
+    private ImageButton save;
+    private TweetDetailsViewModel mViewModel;
+    private List<Carpeta> allFolders;
 
     // --- Métodos de Callback ---
 
@@ -36,12 +40,12 @@ public class TweetDetailsActivity extends AppCompatActivity {
 
         Post item = (Post) getIntent().getSerializableExtra("Post");
         int sa = (int) getIntent().getSerializableExtra("Saved");
-        userImage = findViewById(R.id.iconImageViewDetailTweet);
-        nombre = findViewById(R.id.nameViewDetailTweet);
-        userName = findViewById(R.id.userNameViewDetailTweet);
-        tweet = findViewById(R.id.tweetViewDetailTweet);
-        tweetID = findViewById(R.id.tweetID);
-        share = findViewById(R.id.shareDetailTweet);
+        ShapeableImageView userImage = findViewById(R.id.iconImageViewDetailTweet);
+        TextView nombre = findViewById(R.id.nameViewDetailTweet);
+        TextView userName = findViewById(R.id.userNameViewDetailTweet);
+        TextView tweet = findViewById(R.id.tweetViewDetailTweet);
+        TextView tweetID = findViewById(R.id.tweetID);
+        ImageButton share = findViewById(R.id.shareDetailTweet);
         save = findViewById(R.id.saveDetailTweet);
 
         Picasso.get()
@@ -60,47 +64,39 @@ public class TweetDetailsActivity extends AppCompatActivity {
             save.setImageResource(R.drawable.saved);
         }
         save.setTag(R.string.idSave, item.getId());
-    }
 
-    public void addPostToCarpetaTweet(View v){
-        final long[] folder_id = {1};
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.TDfactory).get(TweetDetailsViewModel.class);
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(TweetDetailsActivity.this);
-                List<Carpeta> folders = database.getCarpetaDao().getAll();
-                String[] nameFolders = new String[folders.size()];
-
-                for(int i = 0; i < folders.size(); i++) {
-                    nameFolders[i] = folders.get(i).getNombre();
-                }
-
-                save = (ImageButton) v;
-                AlertDialog.Builder popupFolders = new AlertDialog.Builder(TweetDetailsActivity.this);
-
-                popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        savePostInFolder(v, folders, which, database);
-                    }
-                });
-
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlertDialog alertDialog = popupFolders.create();
-                        alertDialog.show();
-                    }
-                });
-            }
+        mViewModel.getCarpetas().observe(this, carpetas -> {
+            allFolders = carpetas;
         });
     }
 
+    public void addPostToCarpetaTweet(View v){
+        String[] nameFolders = new String[allFolders.size()];
+
+        for(int i = 0; i < allFolders.size(); i++) {
+            nameFolders[i] = allFolders.get(i).getNombre();
+        }
+
+        save = (ImageButton) v;
+        AlertDialog.Builder popupFolders = new AlertDialog.Builder(TweetDetailsActivity.this);
+
+        popupFolders.setTitle("Seleccione una carpeta").setItems(nameFolders, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                savePostInFolder(v, allFolders, which);
+            }
+        });
+
+        AlertDialog alertDialog = popupFolders.create();
+        alertDialog.show();
+
+    }
+
     // Guarda un post
-    public void savePostInFolder(View v, List<Carpeta> folders, int which, ParsiDatabase database){
+    public void savePostInFolder(View v, List<Carpeta> folders, int which){
         String data = "Se ha guardado en la carpeta " + folders.get(which).getNombre();
         Toast.makeText(TweetDetailsActivity.this, data, Toast.LENGTH_SHORT).show();
         long folder_id = folders.get(which).getIdDb();
@@ -109,18 +105,18 @@ public class TweetDetailsActivity extends AppCompatActivity {
         ImageButton imgButton = (ImageButton) v;
         long post_id = (long) imgButton.getTag(R.string.idSaveDb);
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                Post pOld = database.getPostDao().getPost(post_id);
-                Post p = new Post(pOld.getId(), folder_id);
-                p.setContenido(pOld.getContenido());
-                p.setTimestamp(pOld.getTimestamp());
-                p.setAuthorUsername(pOld.getAuthorUsername());
-                p.setProfilePicture(pOld.getProfilePicture());
-                p.setAuthorId(pOld.getAuthorId());
-                database.getPostDao().insert(p);
-            }
-        });
+        mViewModel.savePost(post_id, folder_id);
+    }
+
+    // Accion al pulsar el boton de "compartir post"
+    public void compartirPost(View v){
+        // Accion de compartir
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Poner aqui enlace del tweet");
+        intent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(intent, null);
+        startActivity(shareIntent);
     }
 }

@@ -1,5 +1,6 @@
 package es.unex.parsiapp.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -14,6 +15,8 @@ public interface UsuarioDao {
     public Usuario getUsuario(long id_usuario);
     @Query("SELECT * FROM usuario WHERE username = :username_")
     public Usuario getUsuarioFromUsername(String username_);
+    @Query("SELECT * FROM usuario WHERE username = :username_")
+    public LiveData<Usuario> getUsuarioFromUsernameLiveData(String username_);
 
     // INSERT
     @Insert

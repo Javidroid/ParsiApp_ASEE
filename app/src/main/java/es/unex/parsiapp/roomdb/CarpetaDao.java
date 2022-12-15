@@ -23,6 +23,8 @@ public interface CarpetaDao {
     public List<Post> getAllPostsFromCarpeta(long carpeta_id);
     @Query("SELECT * FROM carpeta")
     public LiveData<List<Carpeta>> getAllLiveData();
+    @Query("SELECT * FROM carpeta WHERE idDb = :carpeta_id")
+    public LiveData<Carpeta> getFolderLiveData(long carpeta_id);
 
     // INSERT
     @Insert

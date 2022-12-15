@@ -8,7 +8,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Usuario;
@@ -16,8 +19,10 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private String mensaje;
-    private boolean logged = false;
+    private LoginViewModel mViewModel;
+    private Usuario user;
+    private String username;
+    private String password;
 
     // --- Métodos de Callback ---
 
@@ -26,17 +31,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.Lfactory).get(LoginViewModel.class);
+
+        mViewModel.getUser().observe(this, usuario -> {
+            user = usuario;
+            iniciarSesion();
+        });
+
         Button bLogin = (Button) findViewById(R.id.login_confirm_button);
         bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText us = (EditText) findViewById(R.id.username_login);
-                String username = us.getText().toString();
+                username = us.getText().toString();
 
                 EditText ps = (EditText) findViewById(R.id.password_login);
-                String password = ps.getText().toString();
+                password = ps.getText().toString();
 
-                iniciarSesion(username, password);
+                mViewModel.setUser(username);
             }
         });
 
@@ -53,38 +66,23 @@ public class LoginActivity extends AppCompatActivity {
     // --- Otros métodos ---
 
     // Inicio de sesión
-    public void iniciarSesion(String username, String password){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(LoginActivity.this);
-
-                // Obtencion Usuario
-                Usuario u = database.getUsuarioDao().getUsuarioFromUsername(username);
-                if(u != null){
-                    if(u.getPassword().equals(password)){
-                        mensaje = "Bienvenido, " + u.getUsername();
-                        logged = true;
-                    } else {
-                        mensaje = "Contraseña errónea, no se ha podido iniciar sesión";
-                        logged = false;
-                    }
-                } else {
-                    mensaje = "Datos erróneos, no se ha podido iniciar sesión";
-                    logged = false;
-                }
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, mensaje, Toast.LENGTH_SHORT).show();
-                        if(logged){
-                            Intent intent = new Intent(LoginActivity.this, MenuLateralActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
+    public void iniciarSesion(){
+        String mensaje;
+        boolean logged = false;
+        if(user != null){
+            if(user.getPassword().equals(password)){
+                mensaje = "Bienvenido, " + user.getUsername();
+                logged = true;
+            } else {
+                mensaje = "Contraseña errónea, no se ha podido iniciar sesión";
             }
-        });
+        } else {
+            mensaje = "Datos erróneos, no se ha podido iniciar sesión";
+        }
+        Toast.makeText(LoginActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+        if(logged){
+            Intent intent = new Intent(LoginActivity.this, MenuLateralActivity.class);
+            startActivity(intent);
+        }
     }
 }

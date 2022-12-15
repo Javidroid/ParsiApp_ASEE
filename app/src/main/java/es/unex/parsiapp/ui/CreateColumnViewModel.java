@@ -9,7 +9,7 @@ import es.unex.parsiapp.repository.PostRepository;
 public class CreateColumnViewModel extends ViewModel {
 
     private final PostRepository mRepository;
-    private LiveData<Columna> mColumna;
+    private final LiveData<Columna> mColumna;
 
     public CreateColumnViewModel(PostRepository repository){
         mRepository = repository;

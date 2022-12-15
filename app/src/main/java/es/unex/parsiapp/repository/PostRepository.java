@@ -16,10 +16,12 @@ import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
 import es.unex.parsiapp.model.Post;
+import es.unex.parsiapp.model.Usuario;
 import es.unex.parsiapp.roomdb.CarpetaDao;
 import es.unex.parsiapp.roomdb.ColumnaDao;
 import es.unex.parsiapp.roomdb.ParsiDatabase;
 import es.unex.parsiapp.roomdb.PostDao;
+import es.unex.parsiapp.roomdb.UsuarioDao;
 import es.unex.parsiapp.twitterapi.PostNetworkDataSource;
 import es.unex.parsiapp.ui.CreateColumnActivity;
 import es.unex.parsiapp.util.AppExecutors;
@@ -33,6 +35,7 @@ public class PostRepository {
     private final PostDao mPostDao;
     private final CarpetaDao mCarpetaDao;
     private final ColumnaDao mColumnaDao;
+    private final UsuarioDao mUsuarioDao;
 
     private final LiveData<List<Carpeta>> carpetaList;
     private final LiveData<List<Columna>> columnaList;
@@ -46,15 +49,20 @@ public class PostRepository {
     private final MutableLiveData<Columna> columnaFilterLiveData = new MutableLiveData<>();
     private final MutableLiveData<Long> carpetaFilterLiveData = new MutableLiveData<>();
     private final MutableLiveData<Long> columnaBeingEditedFilterLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Long> carpetaBeingEditedFilterLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Long> columnaToDeleteFilterLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Long> carpetaToDeleteFilterLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> userFilterLiveData = new MutableLiveData<>();
 
     // Refresh
     private final Map<String, Long> lastUpdateTimeMillisMap = new HashMap<>();
     private static final long MIN_TIME_FROM_LAST_FETCH_MILLIS = 10000;
 
-    private PostRepository(PostDao postDao, CarpetaDao folderDao, ColumnaDao colDao, PostNetworkDataSource postNetworkDataSource){
+    private PostRepository(PostDao postDao, CarpetaDao folderDao, ColumnaDao colDao, UsuarioDao userDao, PostNetworkDataSource postNetworkDataSource){
         mPostDao = postDao;
         mCarpetaDao = folderDao;
         mColumnaDao = colDao;
+        mUsuarioDao = userDao;
 
         carpetaList = mCarpetaDao.getAllLiveData();
         columnaList = mColumnaDao.getAllFromLiveData();
@@ -80,10 +88,10 @@ public class PostRepository {
         });
     }
 
-    public synchronized static PostRepository getInstance(PostDao pdao, CarpetaDao fdao, ColumnaDao cdao, PostNetworkDataSource nds){
+    public synchronized static PostRepository getInstance(PostDao pdao, CarpetaDao fdao, ColumnaDao cdao, UsuarioDao udao, PostNetworkDataSource nds){
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new PostRepository(pdao, fdao, cdao, nds);
+            sInstance = new PostRepository(pdao, fdao, cdao, udao, nds);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
@@ -139,6 +147,74 @@ public class PostRepository {
                return mColumnaDao.getColumnaLiveData(input);
            }
        });
+    }
+
+    public void setCarpetaBeingEdited(long id_carpeta){
+        carpetaBeingEditedFilterLiveData.setValue(id_carpeta);
+    }
+
+    public LiveData<Carpeta> getCarpetaBeingEdited(){
+        return Transformations.switchMap(carpetaBeingEditedFilterLiveData, new Function<Long, LiveData<Carpeta>>() {
+            @Override
+            public LiveData<Carpeta> apply(Long input) {
+                return mCarpetaDao.getFolderLiveData(input);
+            }
+        });
+    }
+
+    public void setColumnaToDelete(long id_columna){
+        columnaToDeleteFilterLiveData.setValue(id_columna);
+    }
+
+    public LiveData<Columna> getColumnaToDelete(){
+        return Transformations.switchMap(columnaToDeleteFilterLiveData, new Function<Long, LiveData<Columna>>() {
+            @Override
+            public LiveData<Columna> apply(Long input) {
+                return mColumnaDao.getColumnaLiveData(input);
+            }
+        });
+    }
+
+    public void setCarpetaToDelete(long id_carpeta){
+        carpetaToDeleteFilterLiveData.setValue(id_carpeta);
+    }
+
+    public LiveData<Carpeta> getCarpetaToDelete(){
+        return Transformations.switchMap(carpetaToDeleteFilterLiveData, new Function<Long, LiveData<Carpeta>>() {
+            @Override
+            public LiveData<Carpeta> apply(Long input) {
+                return mCarpetaDao.getFolderLiveData(input);
+            }
+        });
+    }
+
+    public void setUser(String username){
+        userFilterLiveData.setValue(username);
+    }
+
+    public LiveData<Usuario> getUser(){
+        return Transformations.switchMap(userFilterLiveData, new Function<String, LiveData<Usuario>>() {
+            @Override
+            public LiveData<Usuario> apply(String input) {
+                return mUsuarioDao.getUsuarioFromUsernameLiveData(input);
+            }
+        });
+    }
+
+    public void savePost(long post_id, long folder_id){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Post pOld = mPostDao.getPost(post_id);
+                Post p = new Post(pOld.getId(), folder_id);
+                p.setContenido(pOld.getContenido());
+                p.setTimestamp(pOld.getTimestamp());
+                p.setAuthorUsername(pOld.getAuthorUsername());
+                p.setProfilePicture(pOld.getProfilePicture());
+                p.setAuthorId(pOld.getAuthorId());
+                mPostDao.insert(p);
+            }
+        });
     }
 
     public void doFetchPosts(Columna c, String max_posts){
@@ -198,6 +274,61 @@ public class PostRepository {
             @Override
             public void run() {
                 mColumnaDao.update(c);
+            }
+        });
+    }
+
+    public void deleteColumna(long id_columna){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mColumnaDao.deleteColumnaByID(id_columna);
+
+                // Selecciona (si puede) una nueva columna como actual
+                try {
+                    Columna newActual = mColumnaDao.getAll().get(0);
+                    newActual.setColumnaActual(true);
+                    mColumnaDao.update(newActual);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void createFolder(Carpeta c){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mCarpetaDao.insert(c);
+            }
+        });
+    }
+
+    public void editFolder(Carpeta c){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mCarpetaDao.update(c);
+            }
+        });
+    }
+
+    public void deleteFolder(long id_carpeta){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mPostDao.deleteAllPostsFromCarpeta(id_carpeta);
+                mCarpetaDao.deleteFolderByID(id_carpeta);
+            }
+        });
+    }
+
+    public void createUser(Usuario u){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mUsuarioDao.insert(u);
             }
         });
     }

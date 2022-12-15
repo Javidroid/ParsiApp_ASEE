@@ -1,6 +1,7 @@
 package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +9,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import es.unex.parsiapp.util.AppExecutors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Carpeta;
 import es.unex.parsiapp.model.Columna;
-import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class DeleteActivity extends AppCompatActivity {
 
@@ -20,6 +23,9 @@ public class DeleteActivity extends AppCompatActivity {
     private long elementId;
     private TextView tview;
     private String mensaje;
+    private DeleteViewModel mViewModel;
+    private Carpeta carpetaToDelete;
+    private Columna columnaToDelete;
 
     // --- Métodos de Callback ---
 
@@ -32,34 +38,35 @@ public class DeleteActivity extends AppCompatActivity {
 
         tview = (TextView) findViewById(R.id.delete_textview);
 
-        setForDelete();
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.Dfactory).get(DeleteViewModel.class);
+
+        AtomicBoolean alreadyObserved = new AtomicBoolean(false);
+
+        if(elementTypeToDelete.equals("Folder")) {
+            mViewModel.getCarpetaToDelete().observe(this, carpeta -> {
+                if(!alreadyObserved.get()) {
+                    carpetaToDelete = carpeta;
+                    mensaje = "¿Seguro que quieres borrar la carpeta " + carpetaToDelete.getNombre() + "?";
+                    tview.setText(mensaje);
+                    alreadyObserved.set(true);
+                }
+            });
+            mViewModel.setCarpetaToDelete(elementId);
+        } else if (elementTypeToDelete.equals("Column")) {
+            mViewModel.getColumnaToDelete().observe(this, columna -> {
+                if(!alreadyObserved.get()) {
+                    columnaToDelete = columna;
+                    mensaje = "¿Seguro que quieres borrar la columna " + columnaToDelete.getNombre() + "?";
+                    tview.setText(mensaje);
+                    alreadyObserved.set(true);
+                }
+            });
+            mViewModel.setColumnaToDelete(elementId);
+        }
     }
 
     // --- Otros Métodos ---
-
-    // Prepara la UI para borrar una columna o una carpeta
-    public void setForDelete(){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(DeleteActivity.this);
-                if(elementTypeToDelete.equals("Folder")) {
-                    Carpeta c = database.getCarpetaDao().getFolder(elementId);
-                    mensaje = "¿Seguro que quieres borrar la carpeta " + c.getNombre() + "?";
-                }else if (elementTypeToDelete.equals("Column")){
-                    Columna c = database.getColumnaDao().getColumna(elementId);
-                    mensaje = "¿Seguro que quieres borrar la columna " + c.getNombre() + "?";
-                }
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        tview.setText(mensaje);
-                    }
-                });
-            }
-        });
-    }
 
     // Al presionar "Cancelar"
     public void onCancelDeleteButton(View v){
@@ -69,40 +76,14 @@ public class DeleteActivity extends AppCompatActivity {
 
     // Al presionar "Confirmar"
     public void onConfirmDeleteButton(View v){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(DeleteActivity.this);
-                if(elementTypeToDelete.equals("Folder")) {
-                    Carpeta c = database.getCarpetaDao().getFolder(elementId);
-                    database.getPostDao().deleteAllPostsFromCarpeta(elementId);
-                    database.getCarpetaDao().deleteFolderByID(elementId);
-                    mensaje = "Se ha eliminado la carpeta " + c.getNombre();
-                }else if (elementTypeToDelete.equals("Column")){
-                    Columna c = database.getColumnaDao().getColumna(elementId);
-                    database.getColumnaDao().deleteColumnaByID(elementId);
-                    mensaje = "Se ha eliminado la columna " + c.getNombre();
-                    if(c.isColumnaActual()){
-                        try {
-                            Columna newActual = database.getColumnaDao().getAll().get(0);
-                            newActual.setColumnaActual(true);
-                            database.getColumnaDao().update(newActual);
-                            mensaje += ". Se ha establecido la columna " + newActual.getNombre() + " como columna actual";
-                        }
-                        catch (Exception e){
-                            ;
-                        }
-                    }
-                }
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(DeleteActivity.this, mensaje, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-            }
-        });
+        if(elementTypeToDelete.equals("Folder")) {
+            mViewModel.deleteCarpeta(elementId);
+            mensaje = "Se ha eliminado la carpeta " + carpetaToDelete.getNombre();
+        }else if (elementTypeToDelete.equals("Column")){
+            mViewModel.deleteColumna(elementId);
+            mensaje = "Se ha eliminado la columna " + columnaToDelete.getNombre();
+        }
+        Toast.makeText(DeleteActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

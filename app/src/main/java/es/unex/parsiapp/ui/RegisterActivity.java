@@ -1,6 +1,7 @@
 package es.unex.parsiapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import es.unex.parsiapp.MyApplication;
+import es.unex.parsiapp.util.AppContainer;
 import es.unex.parsiapp.util.AppExecutors;
 import es.unex.parsiapp.R;
 import es.unex.parsiapp.model.Usuario;
@@ -16,8 +19,10 @@ import es.unex.parsiapp.roomdb.ParsiDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private String mensaje;
-    private boolean logged = false;
+    private RegisterViewModel mViewModel;
+    private Usuario user;
+    private String username;
+    private String password;
 
     // --- Métodos de Callback ---
 
@@ -26,17 +31,25 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        AppContainer appContainer = ((MyApplication) this.getApplication()).appContainer;
+        mViewModel = new ViewModelProvider(this, (ViewModelProvider.Factory) appContainer.Rfactory).get(RegisterViewModel.class);
+
+        mViewModel.getUser().observe(this, usuario -> {
+            user = usuario;
+            registro();
+        });
+
         Button b = (Button) findViewById(R.id.register_confirm_button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText us = (EditText) findViewById(R.id.username_register);
-                String username = us.getText().toString();
+                username = us.getText().toString();
 
                 EditText ps = (EditText) findViewById(R.id.password_register);
-                String password = ps.getText().toString();
+                password = ps.getText().toString();
 
-                registro(username, password);
+                mViewModel.setUser(username);
             }
         });
     }
@@ -44,41 +57,27 @@ public class RegisterActivity extends AppCompatActivity {
     // --- Otros métodos ---
 
     // Registro del usuario
-    public void registro(String username, String password){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                // Declaracion de la instancia de la BD
-                ParsiDatabase database = ParsiDatabase.getInstance(RegisterActivity.this);
+    public void registro(){
 
-                // Obtencion Usuario
-                Usuario u = database.getUsuarioDao().getUsuarioFromUsername(username);
-                if(u != null){
-                    mensaje = "Error, ya existe un usuario con ese nombre";
-                    logged = false;
-                } else {
-                    if(username.length() > 0 && password.length() > 0){
-                        Usuario newU = new Usuario(username, password);
-                        database.getUsuarioDao().insert(newU);
+        String mensaje;
+        boolean logged = false;
+        if(user != null){
+            mensaje = "Error, ya existe un usuario con ese nombre";
+        } else {
+            if(username.length() > 0 && password.length() > 0){
+                Usuario newU = new Usuario(username, password);
+                mViewModel.createUser(newU);
 
-                        mensaje = "¡Bienvenido a Parsi, " + newU.getUsername() + "!";
-                        logged = true;
-                    } else {
-                        mensaje = "¡No puedes dejar vacío ningún campo al registrarte!";
-                        logged = false;
-                    }
-                }
-                AppExecutors.getInstance().mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_SHORT).show();
-                        if(logged){
-                            Intent intent = new Intent(RegisterActivity.this, MenuLateralActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
+                mensaje = "¡Bienvenido a Parsi, " + newU.getUsername() + "!";
+                logged = true;
+            } else {
+                mensaje = "¡No puedes dejar vacío ningún campo al registrarte!";
             }
-        });
+        }
+        Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+        if(logged){
+            Intent intent = new Intent(RegisterActivity.this, MenuLateralActivity.class);
+            startActivity(intent);
+        }
     }
 }
